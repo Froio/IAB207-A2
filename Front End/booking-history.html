@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>My Bookings — Indie-Zone</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link href="static/css/styles.css" rel="stylesheet" />
+</head>
+<body>
+
+<!--  Navbar -->
+<nav class="navbar iz-navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">INDIE<span>—</span>ZONE</a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+      <i class="bi bi-list" style="color:var(--text-secondary);font-size:1.5rem;"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav me-auto ms-4 gap-1">
+        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="events.html">Events</a></li>
+        <li class="nav-item"><a class="nav-link active" href="booking-history.html">My Bookings</a></li>
+      </ul>
+      <div class="d-flex gap-2 mt-3 mt-lg-0 align-items-center">
+        <span style="font-size:0.82rem;color:var(--text-secondary);">Alex T.</span>
+        <a href="create-event.html" class="btn-outline-neon btn">+ Create Event</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!--  Page Header  -->
+<div class="page-band">
+  <div class="container">
+    <p class="section-eyebrow">Account</p>
+    <h1 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2.2rem,5vw,3.5rem);margin-bottom:0.3rem;">My Bookings</h1>
+    <p style="color:var(--text-secondary);font-size:0.9rem;">All events you have booked tickets for.</p>
+  </div>
+</div>
+
+<!--  Bookings List  -->
+<div class="container py-5">
+  <!--  Booking 1 — Upcoming / Open  -->
+  <div class="iz-card mb-4">
+    <div class="row g-0">
+      <!-- Image -->
+      <div class="col-md-3">
+        <img src="static/img/indie_concert.jpg"
+             alt="The Static Echo"
+             style="width:100%;height:100%;object-fit:cover;min-height:160px;border-radius:var(--radius-lg) 0 0 var(--radius-lg);" />
+      </div>
+      <!-- Details -->
+      <div class="col-md-9">
+        <div class="p-4">
+          <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+            <div>
+              <h5 style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;margin-bottom:0.2rem;">
+                The Static Echo — Live at The Black Bear
+              </h5>
+              <div class="d-flex flex-wrap gap-2">
+                <span class="meta-chip"><i class="bi bi-calendar3"></i> Sat 19 Apr 2025 · 8:00 PM</span>
+                <span class="meta-chip"><i class="bi bi-geo-alt"></i> Black Bear Lodge, Fortitude Valley</span>
+              </div>
+            </div>
+            <span class="status-badge badge-open">Open</span>
+          </div>
+
+          <hr style="border-color:var(--border);margin:0.9rem 0;" />
+
+          <!-- Booking meta -->
+          <div class="row g-2 mb-3">
+            <div class="col-sm-4">
+              <p style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);margin-bottom:0.2rem;">Order ID</p>
+              <p style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.1em;color:var(--neon);margin:0;">#IZ-20250419-7284</p>
+            </div>
+            <div class="col-sm-4">
+              <p style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);margin-bottom:0.2rem;">Booked On</p>
+              <p style="font-size:0.88rem;color:var(--text-secondary);margin:0;">14 Apr 2025 · 9:42 PM</p>
+            </div>
+            <div class="col-sm-4">
+              <p style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);margin-bottom:0.2rem;">Tickets</p>
+              <p style="font-size:0.88rem;color:var(--text-secondary);margin:0;">2 × General Admission</p>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="d-flex flex-wrap gap-2">
+            <a href="event-detail.html" class="btn-ghost btn" style="font-size:0.82rem;">
+              <i class="bi bi-eye me-1"></i>View Event
+            </a>
+            <button class="btn-outline-neon btn" style="font-size:0.82rem;" data-bs-toggle="modal" data-bs-target="#qrModal1">
+              <i class="bi bi-qr-code me-1"></i>Show Entry QR
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--  Booking 2 — Sold Out  -->
+  <div class="iz-card mb-4">
+    <div class="row g-0">
+      <div class="col-md-3">
+        <img src="static/img/shoegaze.jpg"
+             alt="Purple Haze"
+             style="width:100%;height:100%;object-fit:cover;min-height:160px;border-radius:var(--radius-lg) 0 0 var(--radius-lg);filter:brightness(0.6);" />
+      </div>
+      <div class="col-md-9">
+        <div class="p-4">
+          <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+            <div>
+              <h5 style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;margin-bottom:0.2rem;">
+                Purple Haze — The Night Room
+              </h5>
+              <div class="d-flex flex-wrap gap-2">
+                <span class="meta-chip"><i class="bi bi-calendar3"></i> Sat 26 Apr 2025 · 9:00 PM</span>
+                <span class="meta-chip"><i class="bi bi-geo-alt"></i>The Brightside, Fortitude Valley</span>
+              </div>
+            </div>
+            <span class="status-badge badge-soldout">Sold Out</span>
+          </div>
+
+          <hr style="border-color:var(--border);margin:0.9rem 0;" />
+
+          <div class="row g-2 mb-3">
+            <div class="col-sm-4">
+              <p style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);margin-bottom:0.2rem;">Order ID</p>
+              <p style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.1em;color:var(--neon);margin:0;">#IZ-20250412-3391</p>
+            </div>
+            <div class="col-sm-4">
+              <p style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);margin-bottom:0.2rem;">Booked On</p>
+              <p style="font-size:0.88rem;color:var(--text-secondary);margin:0;">10 Apr 2025 · 2:15 PM</p>
+            </div>
+            <div class="col-sm-4">
+              <p style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);margin-bottom:0.2rem;">Tickets</p>
+              <p style="font-size:0.88rem;color:var(--text-secondary);margin:0;">1 × General Admission</p>
+            </div>
+          </div>
+
+          <div class="d-flex flex-wrap gap-2">
+            <a href="event-detail.html" class="btn-ghost btn" style="font-size:0.82rem;">
+              <i class="bi bi-eye me-1"></i>View Event
+            </a>
+            <button class="btn-outline-neon btn" style="font-size:0.82rem;" data-bs-toggle="modal" data-bs-target="#qrModal2">
+              <i class="bi bi-qr-code me-1"></i>Show Entry QR
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--  Booking 3 — Inactive (past event)  -->
+  <div class="iz-card mb-4" style="opacity:0.7;">
+    <div class="row g-0">
+      <div class="col-md-3">
+        <img src="static/img/country.avif"
+             alt="Dustbowl Riders"
+             style="width:100%;height:100%;object-fit:cover;min-height:160px;border-radius:var(--radius-lg) 0 0 var(--radius-lg);filter:grayscale(1) brightness(0.4);" />
+      </div>
+      <div class="col-md-9">
+        <div class="p-4">
+          <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+            <div>
+              <h5 style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;margin-bottom:0.2rem;">
+                Dustbowl Riders
+              </h5>
+              <div class="d-flex flex-wrap gap-2">
+                <span class="meta-chip"><i class="bi bi-calendar3"></i> Sat 15 Mar 2025 · 8:00 PM</span>
+                <span class="meta-chip"><i class="bi bi-geo-alt"></i> Workers Club, Fitzroy</span>
+              </div>
+            </div>
+            <span class="status-badge badge-inactive">Inactive</span>
+          </div>
+
+          <hr style="border-color:var(--border);margin:0.9rem 0;" />
+
+          <div class="row g-2 mb-3">
+            <div class="col-sm-4">
+              <p style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);margin-bottom:0.2rem;">Order ID</p>
+              <p style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.1em;color:var(--neon);margin:0;">#IZ-20250301-1047</p>
+            </div>
+            <div class="col-sm-4">
+              <p style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);margin-bottom:0.2rem;">Booked On</p>
+              <p style="font-size:0.88rem;color:var(--text-secondary);margin:0;">28 Feb 2025 · 7:30 PM</p>
+            </div>
+            <div class="col-sm-4">
+              <p style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);margin-bottom:0.2rem;">Tickets</p>
+              <p style="font-size:0.88rem;color:var(--text-secondary);margin:0;">3 × General Admission</p>
+            </div>
+          </div>
+
+          <div class="d-flex flex-wrap gap-2">
+            <a href="event-detail.html" class="btn-ghost btn" style="font-size:0.82rem;">
+              <i class="bi bi-eye me-1"></i>View Event
+            </a>
+            <button class="btn-ghost btn" style="font-size:0.82rem;opacity:0.5;" disabled>
+              <i class="bi bi-qr-code me-1"></i>Event Passed
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<!--  QR Modal 1  -->
+<div class="modal fade" id="qrModal1" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);">
+      <div class="modal-header" style="border-bottom:1px solid var(--border);">
+        <h5 class="modal-title" style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;">
+          <i class="bi bi-qr-code me-2" style="color:var(--neon);"></i>Entry QR Code
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center" style="padding:1.5rem;">
+        <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:1rem;">
+          Order <strong style="color:var(--neon);">#IZ-20250419-7284</strong> · 2 tickets<br/>
+          Present this at the door for entry.
+        </p>
+        <img src="static/img/qr_code.png" alt="Entry QR Code"
+             style="width:100%;max-width:200px;border-radius:var(--radius);border:1px solid var(--border);" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--  QR Modal 2  -->
+<div class="modal fade" id="qrModal2" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-sm">
+    <div class="modal-content" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);">
+      <div class="modal-header" style="border-bottom:1px solid var(--border);">
+        <h5 class="modal-title" style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;">
+          <i class="bi bi-qr-code me-2" style="color:var(--neon);"></i>Entry QR Code
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center" style="padding:1.5rem;">
+        <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:1rem;">
+          Order <strong style="color:var(--neon);">#IZ-20250412-3391</strong> · 1 ticket<br/>
+          Present this at the door for entry.
+        </p>
+        <img src="static/img/qr_code.png" alt="Entry QR Code"
+             style="width:100%;max-width:200px;border-radius:var(--radius);border:1px solid var(--border);" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--  Footer  -->
+<footer class="iz-footer">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <div class="footer-brand">INDIE—ZONE</div>
+      <div class="footer-links">
+        <a href="index.html">Home</a>
+        <a href="events.html">Events</a>
+        <a href="create-event.html">Create Event</a>
+      </div>
+    </div>
+    <p class="footer-copy">© 2026 Indie-Zone. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

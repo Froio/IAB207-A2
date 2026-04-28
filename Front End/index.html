@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Indie-Zone — Pop-Up Indie Concerts</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <link href="static/css/styles.css" rel="stylesheet" />
+</head>
+<body>
+
+<!--  Navbar  -->
+<nav class="navbar iz-navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="index.html">INDIE<span>—</span>ZONE</a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+      <i class="bi bi-list" style="color:var(--text-secondary);font-size:1.5rem;"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navMain">
+      <ul class="navbar-nav me-auto ms-4 gap-1">
+        <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="events.html">Events</a></li>
+        <li class="nav-item"><a class="nav-link" href="booking-history.html">My Bookings</a></li>
+      </ul>
+      <div class="d-flex gap-2 mt-3 mt-lg-0">
+        <a class="btn-outline-neon btn">Log In</a>
+        <a class="btn-neon btn">Join Free</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!--  Banner  -->
+<section class="banner-section">
+  <div class="banner-bg"></div>
+  <div class="container banner-content py-5">
+    <div class="row">
+      <div class="col-lg-7">
+        <p class="section-eyebrow mb-3">Brisbane's Indie Stage</p>
+        <h1 class="banner-title mb-4">
+          FIND YOUR<br>
+          <span class="accent">NEXT</span><br>
+          GIG.
+        </h1>
+        <p class="banner-subtitle mb-5">
+          Indie-Zone is the home of underground, pop-up indie concerts across Brisbane.
+          Discover raw talent, book your spot, and be part of the scene.
+        </p>
+        <div class="d-flex flex-wrap gap-3">
+          <a href="events.html" class="btn-neon btn btn-lg">Browse Events</a>
+          <a href="create-event.html" class="btn-outline-neon btn btn-lg">Create an Event</a>
+        </div>
+
+        <!-- Stats row -->
+        <div class="d-flex flex-wrap gap-4 mt-5 pt-3" style="border-top:1px solid var(--border);">
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--neon);">200+</div>
+            <div style="font-size:0.78rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;">Events Listed</div>
+          </div>
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--neon);">11K</div>
+            <div style="font-size:0.78rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;">Tickets Sold</div>
+          </div>
+          <div>
+            <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--neon);">40+</div>
+            <div style="font-size:0.78rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;">Indie Artists</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--  Category Quicklinks  -->
+<section class="py-5" style="background:var(--bg-secondary);border-bottom:1px solid var(--border);">
+  <div class="container">
+    <div class="d-flex flex-wrap align-items-center gap-3">
+      <span style="font-size:0.78rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-right:0.5rem;">Browse by genre</span>
+      <a href="events.html?cat=indie-rock" class="category-pill">Indie Rock</a>
+      <a href="events.html?cat=folk" class="category-pill">Folk</a>
+      <a href="events.html?cat=dream-pop" class="category-pill">Dream Pop</a>
+      <a href="events.html?cat=lo-fi" class="category-pill">Lo-Fi</a>
+      <a href="events.html?cat=alt-country" class="category-pill">Alt Country</a>
+      <a href="events.html?cat=shoegaze" class="category-pill">Shoegaze</a>
+      <a href="events.html?cat=post-punk" class="category-pill">Post-Punk</a>
+    </div>
+  </div>
+</section>
+
+<!--  Featured Events  -->
+<section class="py-6 py-md-5 mt-5">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-end mb-4">
+      <div>
+        <p class="section-eyebrow">Coming Up</p>
+        <h2 class="section-title" style="font-size:2.4rem;">Featured Events</h2>
+      </div>
+      <a href="events.html" class="btn-ghost btn d-none d-md-inline-flex">See All Events <i class="bi bi-arrow-right ms-1"></i></a>
+    </div>
+
+    <div class="row g-4">
+      <!-- Card 1 -->
+      <div class="col-sm-6 col-lg-4">
+        <a href="event-detail.html" class="text-decoration-none">
+          <div class="iz-card">
+            <img src="static/img/indie_concert.jpg" alt="Concert" class="card-img-top" />
+            <div class="p-4">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="category-pill" style="font-size:0.7rem;padding:0.2rem 0.7rem;">Indie Rock</span>
+                <span class="status-badge badge-open">Open</span>
+              </div>
+              <h5 style="font-family:'Bebas Neue',sans-serif;font-size:1.35rem;margin:0.6rem 0 0.3rem;">The Static Echo — Live at the Black Bear</h5>
+              <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">Sat 19 Apr 2026 · 8:00 PM · Black Bear Lodge, Fortitude Valley</p>
+              <div class="d-flex justify-content-between align-items-center">
+                <span style="font-size:0.82rem;color:var(--text-secondary);"><i class="bi bi-ticket me-1"></i>42 tickets left</span>
+                <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--neon);">$18</span>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="col-sm-6 col-lg-4">
+        <a href="event-detail.html" class="text-decoration-none">
+          <div class="iz-card">
+            <img src="static/img/folk.webp" alt="Folk" class="card-img-top" />
+            <div class="p-4">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="category-pill" style="font-size:0.7rem;padding:0.2rem 0.7rem;">Folk</span>
+                <span class="status-badge badge-open">Open</span>
+              </div>
+              <h5 style="font-family:'Bebas Neue',sans-serif;font-size:1.35rem;margin:0.6rem 0 0.3rem;">River Hollow Acoustic Session</h5>
+              <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">Fri 25 Apr 2026 · 7:30 PM · Queen Street Mall, Brisbane CBD</p>
+              <div class="d-flex justify-content-between align-items-center">
+                <span style="font-size:0.82rem;color:var(--text-secondary);"><i class="bi bi-ticket me-1"></i>18 tickets left</span>
+                <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--neon);">$12</span>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <!-- Card 3 — Sold Out -->
+      <div class="col-sm-6 col-lg-4">
+        <a href="event-detail.html" class="text-decoration-none">
+          <div class="iz-card">
+            <img src="static/img/shoegaze.jpg" alt="Shoegaze" class="card-img-top" style="filter:brightness(0.6);" />
+            <div class="p-4">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="category-pill" style="font-size:0.7rem;padding:0.2rem 0.7rem;">Shoegaze</span>
+                <span class="status-badge badge-soldout">Sold Out</span>
+              </div>
+              <h5 style="font-family:'Bebas Neue',sans-serif;font-size:1.35rem;margin:0.6rem 0 0.3rem;">Purple Haze — The Night Room</h5>
+              <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">Sat 26 Apr 2026 · 9:00 PM · The Brightside, Fortitude Valley</p>
+              <div class="d-flex justify-content-between align-items-center">
+                <span style="font-size:0.82rem;color:var(--pink);"><i class="bi bi-x-circle me-1"></i>Sold out</span>
+                <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--text-muted);">$22</span>
+              </div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <div class="text-center mt-4 d-md-none">
+      <a href="events.html" class="btn-ghost btn">See All Events</a>
+    </div>
+  </div>
+</section>
+
+<!--  How It Works  -->
+<section class="py-5 mt-3" style="background:var(--bg-secondary);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+  <div class="container">
+    <div class="text-center mb-5">
+      <p class="section-eyebrow">Simple as</p>
+      <h2 class="section-title" style="font-size:2.4rem;">How It Works</h2>
+    </div>
+    <div class="row g-4 text-center">
+      <div class="col-md-4">
+        <div style="width:52px;height:52px;border-radius:50%;background:var(--neon-dim);border:1px solid var(--neon);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+          <i class="bi bi-person-plus" style="color:var(--neon);font-size:1.3rem;"></i>
+        </div>
+        <h5 style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:0.04em;">1. Create Account</h5>
+        <p style="font-size:0.88rem;color:var(--text-secondary);max-width:260px;margin:0 auto;">Sign up free, no gatekeeping. Artists and fans both welcome.</p>
+      </div>
+      <div class="col-md-4">
+        <div style="width:52px;height:52px;border-radius:50%;background:var(--neon-dim);border:1px solid var(--neon);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+          <i class="bi bi-calendar-plus" style="color:var(--neon);font-size:1.3rem;"></i>
+        </div>
+        <h5 style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:0.04em;">2. Post or Browse</h5>
+        <p style="font-size:0.88rem;color:var(--text-secondary);max-width:260px;margin:0 auto;">List a pop-up gig in minutes, or explore events by genre.</p>
+      </div>
+      <div class="col-md-4">
+        <div style="width:52px;height:52px;border-radius:50%;background:var(--neon-dim);border:1px solid var(--neon);display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;">
+          <i class="bi bi-ticket-perforated" style="color:var(--neon);font-size:1.3rem;"></i>
+        </div>
+        <h5 style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:0.04em;">3. Grab Your Ticket</h5>
+        <p style="font-size:0.88rem;color:var(--text-secondary);max-width:260px;margin:0 auto;">Book your spot instantly, get an order confirmation on the spot.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--  CTA Banner  -->
+<section class="py-5 mt-5">
+  <div class="container">
+    <div class="iz-card p-5 text-center" style="background:linear-gradient(135deg,#16121e,#1a1520);border-color:var(--border-bright);">
+      <p class="section-eyebrow">Got a gig?</p>
+      <h2 class="section-title mb-3" style="font-size:2.8rem;">Put Your Show<br>On the Map.</h2>
+      <p style="color:var(--text-secondary);margin-bottom:2rem;max-width:440px;margin-left:auto;margin-right:auto;">
+        Indie-Zone is free for artists. Create   an event, set your capacity, and let the community come to you.
+      </p>
+      <a class="btn-neon btn btn-lg">Get Started — Free Sign Up</a>
+    </div>
+  </div>
+</section>
+
+<!--  Footer  -->
+<footer class="iz-footer">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="footer-brand mb-2">INDIE—ZONE</div>
+        <p style="font-size:0.82rem;color:var(--text-muted);max-width:260px;">Brisbane's home for underground, pop-up indie concerts.</p>
+      </div>
+      <div class="col-md-4">
+        <p style="font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:0.8rem;">Navigation</p>
+        <div class="footer-links d-flex flex-column gap-1">
+          <a href="index.html">Home</a>
+          <a href="events.html">Browse Events</a>
+          <a href="create-event.html">Create Event</a>
+          <a href="">Register</a>
+          <a href="">Login</a>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <p style="font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:0.8rem;">Genres</p>
+        <div class="footer-links d-flex flex-wrap gap-1">
+          <a href="events.html">Indie Rock</a>
+          <a href="events.html">Folk</a>
+          <a href="events.html">Dream Pop</a>
+          <a href="events.html">Lo-Fi</a>
+          <a href="events.html">Shoegaze</a>
+          <a href="events.html">Post-Punk</a>
+        </div>
+      </div>
+    </div>
+    <p class="footer-copy">© 2026 Indie-Zone. All rights reserved.</p>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
