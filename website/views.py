@@ -38,7 +38,7 @@ def event_detail(id):
 
         if quantity > event['tickets_available']:
             flash(f'Sorry, only {event["tickets_available"]} tickets are available.')
-            return redirect(url_for('main.event-details', id=id))
+            return redirect(url_for('main.eventdetail', id=id))
 
         event['tickets_available'] -= quantity
 
@@ -57,8 +57,8 @@ def event_detail(id):
 
 @main_bp.route('/order-confirmation')
 def order_confirmation():
-    quantity = request.args.get('quantity', 1, type=int)
-    return render_template('order-confirmation.html', quantity=quantity, event=temp_event)
+    quantity = request.args.get('quantity', 1)
+    return render_template('order-confirmation.html', quantity=quantity)
 
 @main_bp.route('/create-event', methods=['GET', 'POST'])
 def create_event():

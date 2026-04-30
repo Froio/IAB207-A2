@@ -15,7 +15,25 @@
 
         <!-- Navbar -->
         <nav>
-            <!-- Your navbar should go here -->
+            <!--  Navbar  -->
+        <nav class="navbar iz-navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('main.index')}}">INDIE<span>—</span>ZONE</a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMain">
+            <i class="bi bi-list" style="color:var(--text-secondary);font-size:1.5rem;"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navMain">
+            <ul class="navbar-nav me-auto ms-4 gap-1">
+                <li class="nav-item"><a class="nav-link active" href="{{ url_for('main.index')}}">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('main.events')}}">Events</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('main.booking_history')}}">My Bookings</a></li>
+            </ul>
+            <div class="d-flex gap-2 mt-3 mt-lg-0">
+                <a class="btn-outline-neon btn">Log In</a>
+                <a class="btn-neon btn">Join Free</a>
+            </div>
+            </div>
+        </div>
         </nav>
         <!-- Code for using Flask flash -->
         <div class="container-fluid">
