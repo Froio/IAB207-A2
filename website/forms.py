@@ -23,6 +23,6 @@ class RegisterForm(FlaskForm):
 class TicketForm(FlaskForm):
     quantity = IntegerField('Number of Tickets', validators=[
         InputRequired('Please enter a quantity'),
-        NumberRange(min=1, max=10, message='You can only book between 1 and 10 tickets')
+        NumberRange(min=1, max=99, message='You can only book between 1 and 99 tickets')
     ])
     submit = SubmitField('Buy Tickets')

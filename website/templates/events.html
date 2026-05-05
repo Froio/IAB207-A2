@@ -1,9 +1,8 @@
 {% extends "base.html" %}
-
+{# suppress CSS warnings from VS Code linter #}
 {% block body %}
 
-
-<!--  Page Header  -->
+<!-- Page Header -->
 <div class="page-band">
   <div class="container">
     <p class="section-eyebrow">Discover</p>
@@ -12,21 +11,19 @@
   </div>
 </div>
 
-<!--  Filters Bar  -->
-<div style="background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:1rem 0;position:sticky;top:60px;z-index:100;">
+<!-- Filters Bar -->
+<div style="background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:1rem 0;">
   <div class="container">
     <div class="d-flex flex-wrap align-items-center gap-2">
-      <!-- Category pills -->
       <a href="#" class="category-pill active" data-cat="all">All</a>
-      <a href="#" class="category-pill" data-cat="indie-rock">Indie Rock</a>
-      <a href="#" class="category-pill" data-cat="folk">Folk</a>
-      <a href="#" class="category-pill" data-cat="dream-pop">Dream Pop</a>
-      <a href="#" class="category-pill" data-cat="lo-fi">Lo-Fi</a>
-      <a href="#" class="category-pill" data-cat="alt-country">Alt Country</a>
-      <a href="#" class="category-pill" data-cat="shoegaze">Shoegaze</a>
-      <a href="#" class="category-pill" data-cat="post-punk">Post-Punk</a>
+      <a href="#" class="category-pill" data-cat="Indie Rock">Indie Rock</a>
+      <a href="#" class="category-pill" data-cat="Folk">Folk</a>
+      <a href="#" class="category-pill" data-cat="Dream Pop">Dream Pop</a>
+      <a href="#" class="category-pill" data-cat="Lo-Fi">Lo-Fi</a>
+      <a href="#" class="category-pill" data-cat="Alt Country">Alt Country</a>
+      <a href="#" class="category-pill" data-cat="Shoegaze">Shoegaze</a>
+      <a href="#" class="category-pill" data-cat="Post-Punk">Post-Punk</a>
 
-      <!-- Spacer + Search -->
       <div class="ms-auto d-flex gap-2 align-items-center">
         <div style="position:relative;">
           <i class="bi bi-search" style="position:absolute;left:0.75rem;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:0.85rem;"></i>
@@ -42,226 +39,81 @@
   </div>
 </div>
 
-<!--  Events Grid  -->
+<!-- Events Grid -->
 <section class="py-5">
   <div class="container">
+    <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1.5rem;">
+      Showing <strong style="color:var(--text-secondary);">{{ events|length }}</strong> events
+    </p>
 
     <div class="row g-4" id="events-grid">
 
-      <!-- Event 1 – Open -->
-      <div class="col-sm-6 col-lg-4 col-xl-3 event-item" data-cat="indie-rock">
-        <a href="event-detail.html" class="text-decoration-none">
+      {% for event in events %}
+      <div class="col-sm-6 col-lg-4 col-xl-3 event-item" data-cat="{{ event.category }}">
+        <a href="{{ url_for('main.event_detail', id=event.id) }}" class="text-decoration-none">
           <div class="iz-card h-100">
-            <img src="static/img/indie_concert.jpg" alt="Static Echo" class="card-img-top" />
+
+            <img src="{{ url_for('static', filename=event.image) }}"
+                 alt="{{ event.title }}"
+                 class="card-img-top"
+                 {% if event.status == 'Sold Out' %}style="filter:brightness(0.55);"
+                 {% elif event.status == 'Cancelled' %}style="filter:grayscale(0.8) brightness(0.45);"
+                 {% elif event.status == 'Inactive' %}style="filter:grayscale(1) brightness(0.4);"
+                 {% endif %} />
+
             <div class="p-3">
               <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="category-pill" style="font-size:0.68rem;padding:0.18rem 0.6rem;">Indie Rock</span>
-                <span class="status-badge badge-open">Open</span>
+                <span class="category-pill" style="font-size:0.68rem;padding:0.18rem 0.6rem;">{{ event.category }}</span>
+
+                {% if event.status == 'Open' %}
+                  <span class="status-badge badge-open">Open</span>
+                {% elif event.status == 'Sold Out' %}
+                  <span class="status-badge badge-soldout">Sold Out</span>
+                {% elif event.status == 'Cancelled' %}
+                  <span class="status-badge badge-cancelled">Cancelled</span>
+                {% elif event.status == 'Inactive' %}
+                  <span class="status-badge badge-inactive">Inactive</span>
+                {% endif %}
+
               </div>
-              <h6 style="font-family:'Bebas Neue',sans-serif;font-size:1.15rem;margin:0.4rem 0 0.25rem;line-height:1.15;">The Static Echo — Live at the Black Bear</h6>
-              <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.8rem;"><i class="bi bi-calendar3 me-1"></i>Sat 19 Apr · 8:00 PM</p>
-              <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.8rem;"><i class="bi bi-geo-alt me-1"></i>Black Bear Lodge, Fortitude Valley</p>
+
+              <h6 style="font-family:'Bebas Neue',sans-serif;font-size:1.15rem;margin:0.4rem 0 0.25rem;line-height:1.15; {% if event.status == 'Cancelled' or event.status == 'Inactive' %}opacity:0.6;{% endif %}">{{ event.title }}</h6>
+
+              <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.8rem;">
+                <i class="bi bi-calendar3 me-1"></i>{{ event.date }} · {{ event.time.split('—')[0].strip() }}
+              </p>
+              <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.8rem;">
+                <i class="bi bi-geo-alt me-1"></i>{{ event.venue }}
+              </p>
+
               <div class="d-flex justify-content-between align-items-center">
-                <span style="font-size:0.78rem;color:var(--text-secondary);"><i class="bi bi-ticket me-1"></i>42 left</span>
-                <span style="font-family:'Bebas Neue',sans-serif;font-size:1.05rem;color:var(--neon);">$18</span>
+                {% if event.status == 'Open' %}
+                  <span style="font-size:0.78rem;color:var(--text-secondary);"><i class="bi bi-ticket me-1"></i>{{ event.tickets_available }} left</span>
+                  <span style="font-family:'Bebas Neue',sans-serif;font-size:1.05rem;color:var(--neon);">
+                    {% if event.price == 0 %}Free{% else %}${{ "%.0f"|format(event.price) }}{% endif %}
+                  </span>
+                {% elif event.status == 'Sold Out' %}
+                  <span style="font-size:0.78rem;color:var(--pink);"><i class="bi bi-x-circle me-1"></i>Sold out</span>
+                  <span style="font-family:'Bebas Neue',sans-serif;font-size:1.05rem;color:var(--text-muted);">${{ "%.0f"|format(event.price) }}</span>
+                {% elif event.status == 'Cancelled' %}
+                  <span style="font-size:0.78rem;color:#ff6c3c;">Event cancelled</span>
+                {% elif event.status == 'Inactive' %}
+                  <span style="font-size:0.78rem;color:var(--text-muted);">Event has passed</span>
+                {% endif %}
               </div>
+
             </div>
           </div>
         </a>
       </div>
-
-      <!-- Event 2 – Open -->
-      <div class="col-sm-6 col-lg-4 col-xl-3 event-item" data-cat="folk">
-        <a href="event-detail.html" class="text-decoration-none">
-          <div class="iz-card h-100">
-            <img src="static/img/folk.webp" alt="Folk" class="card-img-top" />
-            <div class="p-3">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="category-pill" style="font-size:0.68rem;padding:0.18rem 0.6rem;">Folk</span>
-                <span class="status-badge badge-open">Open</span>
-              </div>
-              <h6 style="font-family:'Bebas Neue',sans-serif;font-size:1.15rem;margin:0.4rem 0 0.25rem;line-height:1.15;">River Hollow Acoustic Session</h6>
-              <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.8rem;"><i class="bi bi-calendar3 me-1"></i>Fri 25 Apr · 7:30 PM</p>
-              <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.8rem;"><i class="bi bi-geo-alt me-1"></i>Queen Street Mall, Brisbane CBD</p>
-              <div class="d-flex justify-content-between align-items-center">
-                <span style="font-size:0.78rem;color:var(--text-secondary);"><i class="bi bi-ticket me-1"></i>18 left</span>
-                <span style="font-family:'Bebas Neue',sans-serif;font-size:1.05rem;color:var(--neon);">$12</span>
-              </div>
-            </div>
-          </div>
-        </a>
+      {% else %}
+      <div class="col-12">
+        <p style="color:var(--text-muted);text-align:center;padding:3rem 0;">No events found.</p>
       </div>
+      {% endfor %}
 
-      <!-- Event 3 – Sold Out -->
-      <div class="col-sm-6 col-lg-4 col-xl-3 event-item" data-cat="shoegaze">
-        <a href="event-detail.html" class="text-decoration-none">
-          <div class="iz-card h-100">
-            <img src="static/img/shoegaze.jpg" alt="Shoegaze" class="card-img-top" style="filter:brightness(0.55);" />
-            <div class="p-3">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="category-pill" style="font-size:0.68rem;padding:0.18rem 0.6rem;">Shoegaze</span>
-                <span class="status-badge badge-soldout">Sold Out</span>
-              </div>
-              <h6 style="font-family:'Bebas Neue',sans-serif;font-size:1.15rem;margin:0.4rem 0 0.25rem;line-height:1.15;">Purple Haze — The Night Room</h6>
-              <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.8rem;"><i class="bi bi-calendar3 me-1"></i>Sat 26 Apr · 9:00 PM</p>
-              <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.8rem;"><i class="bi bi-geo-alt me-1"></i>The Brightside, Fortitude Valley</p>
-              <div class="d-flex justify-content-between align-items-center">
-                <span style="font-size:0.78rem;color:var(--pink);"><i class="bi bi-x-circle me-1"></i>Sold out</span>
-                <span style="font-family:'Bebas Neue',sans-serif;font-size:1.05rem;color:var(--text-muted);">$22</span>
-              </div>
-            </div>
-          </div>
-        </a>
-      </div>
-
-      <!-- Event 4 – Open -->
-      <div class="col-sm-6 col-lg-4 col-xl-3 event-item" data-cat="dream-pop">
-        <a href="event-detail.html" class="text-decoration-none">
-          <div class="iz-card h-100">
-            <img src="static/img/alt_concert.jpg" alt="Moonbeam" class="card-img-top" />
-            <div class="p-3">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="category-pill" style="font-size:0.68rem;padding:0.18rem 0.6rem;">Dream Pop</span>
-                <span class="status-badge badge-open">Open</span>
-              </div>
-              <h6 style="font-family:'Bebas Neue',sans-serif;font-size:1.15rem;margin:0.4rem 0 0.25rem;line-height:1.15;">Moonbeam Collective</h6>
-              <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.8rem;"><i class="bi bi-calendar3 me-1"></i>Thu 1 May · 8:30 PM</p>
-              <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.8rem;"><i class="bi bi-geo-alt me-1"></i>The Tivoli, Fortitude Valley</p>
-              <div class="d-flex justify-content-between align-items-center">
-                <span style="font-size:0.78rem;color:var(--text-secondary);"><i class="bi bi-ticket me-1"></i>60 left</span>
-                <span style="font-family:'Bebas Neue',sans-serif;font-size:1.05rem;color:var(--neon);">$20</span>
-              </div>
-            </div>
-          </div>
-        </a>
-      </div>
-
-      <!-- Event 5 – Cancelled -->
-      <div class="col-sm-6 col-lg-4 col-xl-3 event-item" data-cat="post-punk">
-        <a href="event-detail.html" class="text-decoration-none">
-          <div class="iz-card h-100">
-            <img src="static/img/WirenStatic.jpeg" alt="Post-Punk" class="card-img-top" style="filter:grayscale(0.8) brightness(0.45);" />
-            <div class="p-3">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="category-pill" style="font-size:0.68rem;padding:0.18rem 0.6rem;">Post-Punk</span>
-                <span class="status-badge badge-cancelled">Cancelled</span>
-              </div>
-              <h6 style="font-family:'Bebas Neue',sans-serif;font-size:1.15rem;margin:0.4rem 0 0.25rem;line-height:1.15;opacity:0.6;">Wire & Static — Fortitude Valley</h6>
-              <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.8rem;"><i class="bi bi-calendar3 me-1"></i>Sat 3 May · 9:00 PM</p>
-              <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.8rem;"><i class="bi bi-geo-alt me-1"></i>The Zoo, Fortitude Valley</p>
-              <div class="d-flex justify-content-between align-items-center">
-                <span style="font-size:0.78rem;color: var(--cancelled);">Event cancelled</span>
-              </div>
-            </div>
-          </div>
-        </a>
-      </div>
-
-      <!-- Event 6 – Open -->
-      <div class="col-sm-6 col-lg-4 col-xl-3 event-item" data-cat="lo-fi">
-        <a href="event-detail.html" class="text-decoration-none">
-          <div class="iz-card h-100">
-            <img src="static/img/Swingamajig.webp" alt="Lo-Fi" class="card-img-top" />
-            <div class="p-3">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="category-pill" style="font-size:0.68rem;padding:0.18rem 0.6rem;">Lo-Fi</span>
-                <span class="status-badge badge-open">Open</span>
-              </div>
-              <h6 style="font-family:'Bebas Neue',sans-serif;font-size:1.15rem;margin:0.4rem 0 0.25rem;line-height:1.15;">Sunday Tape Session</h6>
-              <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.8rem;"><i class="bi bi-calendar3 me-1"></i>Sun 4 May · 3:00 PM</p>
-              <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.8rem;"><i class="bi bi-geo-alt me-1"></i>Lefty's Music Hall, Brisbane CBD</p>
-              <div class="d-flex justify-content-between align-items-center">
-                <span style="font-size:0.78rem;color:var(--text-secondary);"><i class="bi bi-ticket me-1"></i>30 left</span>
-                <span style="font-family:'Bebas Neue',sans-serif;font-size:1.05rem;color:var(--neon);">Free</span>
-              </div>
-            </div>
-          </div>
-        </a>
-      </div>
-
-      <!-- Event 7 – Inactive -->
-      <div class="col-sm-6 col-lg-4 col-xl-3 event-item" data-cat="alt-country">
-        <a href="event-detail.html" class="text-decoration-none">
-          <div class="iz-card h-100">
-            <img src="static/img/country.avif" alt="Country" class="card-img-top" style="filter:grayscale(1) brightness(0.4);" />
-            <div class="p-3">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="category-pill" style="font-size:0.68rem;padding:0.18rem 0.6rem;">Alt Country</span>
-                <span class="status-badge badge-inactive">Inactive</span>
-              </div>
-              <h6 style="font-family:'Bebas Neue',sans-serif;font-size:1.15rem;margin:0.4rem 0 0.25rem;line-height:1.15;opacity:0.55;">Dustbowl Riders</h6>
-              <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.8rem;"><i class="bi bi-calendar3 me-1"></i>Sat 15 Mar · 8:00 PM</p>
-              <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.8rem;"><i class="bi bi-geo-alt me-1"></i>The Joynt, West End</p>
-              <div>
-                <span style="font-size:0.78rem;color:var(--text-muted);">Event has passed</span>
-              </div>
-            </div>
-          </div>
-        </a>
-      </div>
-
-      <!-- Event 8 – Open -->
-      <div class="col-sm-6 col-lg-4 col-xl-3 event-item" data-cat="indie-rock">
-        <a href="event-detail.html" class="text-decoration-none">
-          <div class="iz-card h-100">
-            <img src="static/img/indie_rock.jpg" alt="" class="card-img-top" />
-            <div class="p-3">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="category-pill" style="font-size:0.68rem;padding:0.18rem 0.6rem;">Indie Rock</span>
-                <span class="status-badge badge-open">Open</span>
-              </div>
-              <h6 style="font-family:'Bebas Neue',sans-serif;font-size:1.15rem;margin:0.4rem 0 0.25rem;line-height:1.15;">Glass Houses</h6>
-              <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.8rem;"><i class="bi bi-calendar3 me-1"></i>Fri 9 May · 10:00 PM</p>
-              <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.8rem;"><i class="bi bi-geo-alt me-1"></i>The Foundry, Fortitude Valley</p>
-              <div class="d-flex justify-content-between align-items-center">
-                <span style="font-size:0.78rem;color:var(--text-secondary);"><i class="bi bi-ticket me-1"></i>15 left</span>
-                <span style="font-family:'Bebas Neue',sans-serif;font-size:1.05rem;color:var(--neon);">$15</span>
-              </div>
-            </div>
-          </div>
-        </a>
-      </div>
-
-    </div><!-- /events-grid -->
+    </div>
   </div>
 </section>
-
-<!--  Footer  -->
-<footer class="iz-footer">
-  <div class="container">
-    <div class="row g-4">
-      <div class="col-md-4">
-        <div class="footer-brand mb-2">INDIE—ZONE</div>
-        <p style="font-size:0.82rem;color:var(--text-muted);max-width:260px;">Brisbane's home for underground, pop-up indie concerts.</p>
-      </div>
-      <div class="col-md-4">
-        <p style="font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:0.8rem;">Navigation</p>
-        <div class="footer-links d-flex flex-column gap-1">
-          <a href="{{ url_for('main.index')}}">Home</a>
-          <a href="{{ url_for('main.events')}}">Browse Events</a>
-          <a href="{{ url_for('main.create_event')}}">Create Event</a>
-          <a href="">Register</a>
-          <a href="">Login</a>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <p style="font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:0.8rem;">Genres</p>
-        <div class="footer-links d-flex flex-wrap gap-1">
-          <a href="">Indie Rock</a>
-          <a href="">Folk</a>
-          <a href="">Dream Pop</a>
-          <a href="">Lo-Fi</a>
-          <a href="">Shoegaze</a>
-          <a href="">Post-Punk</a>
-        </div>
-      </div>
-    </div>
-    <p class="footer-copy">© 2026 Indie-Zone. All rights reserved.</p>
-  </div>
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
 
 {% endblock %}
