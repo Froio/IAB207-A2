@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from .forms import TicketForm
+from flask_login import login_required, current_user
 
 main_bp = Blueprint('main', __name__)
 
@@ -146,6 +147,10 @@ def event_detail(id):
         return redirect(url_for('main.events'))
 
     if form.validate_on_submit():
+        # require login before purchasing
+        if not current_user.is_authenticated:
+            return redirect(url_for('auth.login', next=request.path))
+
         quantity = form.quantity.data
 
         if quantity > event['tickets_available']:
@@ -174,14 +179,22 @@ def order_confirmation():
     return render_template('order-confirmation.html', quantity=quantity, event=event)
 
 @main_bp.route('/create-event', methods=['GET', 'POST'])
+@login_required
 def create_event():
     return render_template('create-event.html')
 
 @main_bp.route('/event/<int:id>/edit', methods=['GET', 'POST'])
+@login_required
 def edit_event(id):
     return render_template('edit-event.html')
 
 @main_bp.route('/booking-history')
+@login_required
 def booking_history():
     return render_template('booking-history.html')
 
+
+@main_bp.route('/profile')
+@login_required
+def profile():
+    return render_template('profile.html')
