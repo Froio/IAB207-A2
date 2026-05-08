@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+{% block body %}
+{% set status_class_map = {
+    'Open': 'badge-open',
+    'Sold Out': 'badge-soldout',
+    'Inactive': 'badge-inactive',
+    'Cancelled': 'badge-cancelled'
+  } %}
+
+
+<!-- Breadcrumb -->
+<div style="background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:0.6rem 0;">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-0" style="font-size:0.78rem;">
+        <li class="breadcrumb-item"><a href="{{ url_for('main.index') }}" style="color:var(--text-muted);">Home</a></li>
+        <li class="breadcrumb-item"><a href="{{ url_for('main.events') }}" style="color:var(--text-muted);">Events</a></li>
+        <li class="breadcrumb-item active" style="color:var(--text-secondary);">{{ event.title }}</li>
+      </ol>
+    </nav>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="container py-5">
+  <div class="row g-5">
+
+    <!-- Left: Event Info -->
+    <div class="col-lg-8">
+
+      <!-- Banner image -->
+      <img src="{{ url_for('static', filename=event.image) }}"
+           alt="{{ event.title }}"
+           class="detail-banner-img mb-4" />
+
+      <!-- Title + status -->
+      <div class="d-flex flex-wrap align-items-start gap-3 mb-2">
+        <h1 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,5vw,3.2rem);line-height:1;flex:1;">
+          {{ event.title }}
+        </h1>
+      <span class="status-badge {{ status_class_map[event.status] }}"> {{ event.status }} </span>
+      </div>
+
+      <!-- Meta chips -->
+      <div class="d-flex flex-wrap gap-2 mb-4">
+        <span class="meta-chip"><i class="bi bi-calendar3"></i> {{ event.date }}</span>
+        <span class="meta-chip"><i class="bi bi-clock"></i> {{ event.time }}</span>
+        <span class="meta-chip"><i class="bi bi-geo-alt"></i> {{ event.venue }}</span>
+        <span class="meta-chip"><i class="bi bi-music-note-beamed"></i> {{ event.category }}</span>
+      </div>
+
+      <hr class="iz-divider" />
+
+      <!-- Description -->
+      <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;margin-bottom:0.8rem;">About This Event</h3>
+      <p style="color:var(--text-secondary);line-height:1.75;margin-bottom:2rem;">
+        {{ event.description }}
+      </p>
+
+      <!-- Acknowledgement of Country -->
+      {% if event.acknowledgement_type == 'generic' %}
+      <div class="aoc-block mb-4">
+        <p style="margin-bottom:0.3rem;font-size:0.75rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--purple-light);font-style:normal;">Acknowledgement of Country</p>
+        We acknowledge the Traditional Custodians of the lands on which this event takes place and pay our respect to their Elders past, present, and emerging.
+      </div>
+      {% elif event.acknowledgement_type == 'enhanced' %}
+      <div class="aoc-block mb-4">
+        <p style="margin-bottom:0.3rem;font-size:0.75rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--purple-light);font-style:normal;">Acknowledgement of Country — Enhanced</p>
+        We acknowledge the Traditional Custodians of the land on which this event takes place and pay our respect to their Elders past, present, and emerging. We recognise their ongoing connection to this land and their continued contributions to community and culture. Sovereignty was never ceded.
+      </div>
+      {% endif %}
+
+      <hr class="iz-divider" />
+
+      <!-- Comments Section -->
+      <div id="comments">
+        <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.5rem;margin-bottom:1.5rem;">
+          Comments
+        </h3>
+
+        <!-- Post comment form -->
+        <div class="iz-card p-4 mb-4">
+          <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:1rem;font-weight:600;">Post a Comment</p>
+          <textarea class="iz-textarea" rows="3" placeholder="Share your thoughts, ask a question…" style="margin-bottom:0.8rem;"></textarea>
+          <div class="d-flex justify-content-end">
+            <button class="btn-neon btn" style="font-size:0.9rem;padding:0.5rem 1.4rem;">Post Comment</button>
+          </div>
+        </div>
+
+        <!-- Comments loop -->
+        {% for comment in comments %}
+        <div class="comment-card">
+          <div class="d-flex gap-3 align-items-start">
+            <div class="comment-avatar">{{ comment.author[0] }}</div>
+            <div style="flex:1;">
+              <div class="d-flex justify-content-between mb-1">
+                <span style="font-weight:600;font-size:0.88rem;">{{ comment.author }}</span>
+                <span style="font-size:0.75rem;color:var(--text-muted);">{{ comment.date }}</span>
+              </div>
+              <p style="font-size:0.88rem;color:var(--text-secondary);margin:0;">
+                {{ comment.text }}
+              </p>
+            </div>
+          </div>
+        </div>
+        {% else %}
+        <p style="color:var(--text-muted);font-size:0.88rem;">No comments yet — be the first!</p>
+        {% endfor %}
+
+      </div>
+
+    </div><!-- /col-lg-8 -->
+
+    <!-- Right: Ticket Sidebar -->
+    <div class="col-lg-4">
+      <div style="position:sticky;top:80px;">
+
+        <!-- Ticket Box -->
+        <div class="iz-card p-4 mb-3">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;margin:0;">Get Tickets</h5>
+            <span class="status-badge {{ status_class_map[event.status] }}">{{ event.status }} </span>
+          </div>
+
+          <div class="d-flex justify-content-between mb-1" style="font-size:0.88rem;">
+            <span style="color:var(--text-secondary);">Price per ticket</span>
+            <span style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--neon);">${{ event.price }}</span>
+          </div>
+          <div class="d-flex justify-content-between mb-4" style="font-size:0.82rem;">
+            <span style="color:var(--text-muted);">Tickets remaining</span>
+            <span style="color:var(--text-secondary);">{{ event.tickets_available }}</span>
+          </div>
+
+          <!-- Flash messages -->
+          {% with messages = get_flashed_messages() %}
+            {% if messages %}
+              {% for message in messages %}
+                <div class="alert-iz-danger mb-3">
+                  <i class="bi bi-exclamation-circle me-2"></i>{{ message }}
+                </div>
+              {% endfor %}
+            {% endif %}
+          {% endwith %}
+
+          <!-- Ticket form -->
+          {% if event.status == 'Open' %}
+          <form method="POST" action="{{ url_for('main.event_detail', id=event.id) }}">
+            {{ form.hidden_tag() }}
+            <label class="iz-label mb-2">Number of Tickets</label>
+            {{ form.quantity(class="iz-input mb-3") }}
+            {{ form.submit(class="btn-neon btn w-100", style="font-size:1.05rem;padding:0.7rem;") }}
+          </form>
+          {% else %}
+          <p style="color:var(--pink);font-size:0.88rem;">Tickets are no longer available for this event.</p>
+          {% endif %}
+
+        </div>
+
+        <!-- Embedded Map -->
+        <div class="iz-card p-3 mb-3" style="background:var(--bg-secondary);">
+          <h5 style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;margin:0;">Venue</h5>
+          <div class="ratio ratio-4x3 mt-2">
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3540.3596736121053!2d153.03218907545858!3d-27.458059776326422!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x6b9159f3ae88ea49%3A0xa493e63f4afa4c4c!2sBlack%20Bear%20Lodge!5e0!3m2!1sen!2sau!4v1775528449909!5m2!1sen!2sau"
+              style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+          </div>
+          <p class="mt-2" style="font-size:0.82rem;color:var(--text-secondary);">{{ event.address }}</p>
+        </div>
+
+        <!-- Event creator actions -->
+        <div class="iz-card p-4 mb-3" style="border-color:rgba(200,255,0,0.15);">
+          <p style="font-size:0.75rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--neon);margin-bottom:0.8rem;">
+            <i class="bi bi-shield-check me-1"></i> You created this event
+          </p>
+          <div class="d-flex flex-column gap-2">
+            <a href="{{ url_for('main.edit_event', id=event.id) }}" class="btn-outline-neon btn" style="font-size:0.88rem;text-align:center;">
+              <i class="bi bi-pencil me-1"></i>Edit Event
+            </a>
+            <button class="btn-danger-subtle btn" data-bs-toggle="modal" data-bs-target="#cancelModal">
+              <i class="bi bi-x-circle me-1"></i>Cancel Event
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div><!-- /col-lg-4 -->
+
+  </div><!-- /row -->
+</div><!-- /container -->
+
+<!-- Cancel Event Modal -->
+<div class="modal fade" id="cancelModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);">
+      <div class="modal-header" style="border-bottom:1px solid var(--border);">
+        <h5 class="modal-title" style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--pink);">
+          Cancel This Event?
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:1.5rem;">
+        <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:0.5rem;">
+          This action will set the event status to <strong style="color:#ff6c3c;">Cancelled</strong> and notify all ticket holders.
+        </p>
+        <p style="color:var(--text-secondary);font-size:0.9rem;">This cannot be undone. Are you sure?</p>
+      </div>
+      <div class="modal-footer" style="border-top:1px solid var(--border);gap:0.75rem;">
+        <button type="button" class="btn-ghost btn" data-bs-dismiss="modal">Keep Event</button>
+        <button type="button" class="btn-danger-subtle btn" style="font-size:0.9rem;padding:0.55rem 1.4rem;">
+          <i class="bi bi-x-circle me-1"></i>Yes, Cancel Event
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

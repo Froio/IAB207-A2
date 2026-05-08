@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{# suppress CSS warnings from VS Code linter #}
+{% block body %}
+
+<!-- Page Header -->
+<div class="page-band">
+  <div class="container">
+    <p class="section-eyebrow">Discover</p>
+    <h1 style="font-family:'Bebas Neue',sans-serif;font-size:clamp(2.5rem,6vw,4rem);margin-bottom:0.3rem;">All Events</h1>
+    <p style="color:var(--text-secondary);font-size:0.9rem;">Showing upcoming and open events across Brisbane</p>
+  </div>
+</div>
+
+<!-- Filters Bar -->
+<div style="background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:1rem 0;">
+  <div class="container">
+    <div class="d-flex flex-wrap align-items-center gap-2">
+      <a href="#" class="category-pill active" data-cat="all">All</a>
+      <a href="#" class="category-pill" data-cat="Indie Rock">Indie Rock</a>
+      <a href="#" class="category-pill" data-cat="Folk">Folk</a>
+      <a href="#" class="category-pill" data-cat="Dream Pop">Dream Pop</a>
+      <a href="#" class="category-pill" data-cat="Lo-Fi">Lo-Fi</a>
+      <a href="#" class="category-pill" data-cat="Alt Country">Alt Country</a>
+      <a href="#" class="category-pill" data-cat="Shoegaze">Shoegaze</a>
+      <a href="#" class="category-pill" data-cat="Post-Punk">Post-Punk</a>
+
+      <div class="ms-auto d-flex gap-2 align-items-center">
+        <div style="position:relative;">
+          <i class="bi bi-search" style="position:absolute;left:0.75rem;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:0.85rem;"></i>
+          <input type="search" class="iz-input" placeholder="Search events…" style="padding-left:2.2rem;width:200px;height:36px;font-size:0.85rem;" />
+        </div>
+        <select class="iz-select" style="width:150px;height:36px;font-size:0.82rem;padding:0 0.8rem;">
+          <option>Sort: Soonest</option>
+          <option>Sort: Price ↑</option>
+          <option>Sort: Price ↓</option>
+        </select>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Events Grid -->
+<section class="py-5">
+  <div class="container">
+    <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1.5rem;">
+      Showing <strong style="color:var(--text-secondary);">{{ events|length }}</strong> events
+    </p>
+
+    <div class="row g-4" id="events-grid">
+
+      {% for event in events %}
+      <div class="col-sm-6 col-lg-4 col-xl-3 event-item" data-cat="{{ event.category }}">
+        <a href="{{ url_for('main.event_detail', id=event.id) }}" class="text-decoration-none">
+          <div class="iz-card h-100">
+
+            <img src="{{ url_for('static', filename=event.image) }}"
+                 alt="{{ event.title }}"
+                 class="card-img-top"
+                 {% if event.status == 'Sold Out' %}style="filter:brightness(0.55);"
+                 {% elif event.status == 'Cancelled' %}style="filter:grayscale(0.8) brightness(0.45);"
+                 {% elif event.status == 'Inactive' %}style="filter:grayscale(1) brightness(0.4);"
+                 {% endif %} />
+
+            <div class="p-3">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="category-pill" style="font-size:0.68rem;padding:0.18rem 0.6rem;">{{ event.category }}</span>
+
+                {% if event.status == 'Open' %}
+                  <span class="status-badge badge-open">Open</span>
+                {% elif event.status == 'Sold Out' %}
+                  <span class="status-badge badge-soldout">Sold Out</span>
+                {% elif event.status == 'Cancelled' %}
+                  <span class="status-badge badge-cancelled">Cancelled</span>
+                {% elif event.status == 'Inactive' %}
+                  <span class="status-badge badge-inactive">Inactive</span>
+                {% endif %}
+
+              </div>
+
+              <h6 style="font-family:'Bebas Neue',sans-serif;font-size:1.15rem;margin:0.4rem 0 0.25rem;line-height:1.15; {% if event.status == 'Cancelled' or event.status == 'Inactive' %}opacity:0.6;{% endif %}">{{ event.title }}</h6>
+
+              <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.8rem;">
+                <i class="bi bi-calendar3 me-1"></i>{{ event.date }} · {{ event.time.split('—')[0].strip() }}
+              </p>
+              <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.8rem;">
+                <i class="bi bi-geo-alt me-1"></i>{{ event.venue }}
+              </p>
+
+              <div class="d-flex justify-content-between align-items-center">
+                {% if event.status == 'Open' %}
+                  <span style="font-size:0.78rem;color:var(--text-secondary);"><i class="bi bi-ticket me-1"></i>{{ event.tickets_available }} left</span>
+                  <span style="font-family:'Bebas Neue',sans-serif;font-size:1.05rem;color:var(--neon);">
+                    {% if event.price == 0 %}Free{% else %}${{ "%.0f"|format(event.price) }}{% endif %}
+                  </span>
+                {% elif event.status == 'Sold Out' %}
+                  <span style="font-size:0.78rem;color:var(--pink);"><i class="bi bi-x-circle me-1"></i>Sold out</span>
+                  <span style="font-family:'Bebas Neue',sans-serif;font-size:1.05rem;color:var(--text-muted);">${{ "%.0f"|format(event.price) }}</span>
+                {% elif event.status == 'Cancelled' %}
+                  <span style="font-size:0.78rem;color:#ff6c3c;">Event cancelled</span>
+                {% elif event.status == 'Inactive' %}
+                  <span style="font-size:0.78rem;color:var(--text-muted);">Event has passed</span>
+                {% endif %}
+              </div>
+
+            </div>
+          </div>
+        </a>
+      </div>
+      {% else %}
+      <div class="col-12">
+        <p style="color:var(--text-muted);text-align:center;padding:3rem 0;">No events found.</p>
+      </div>
+      {% endfor %}
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

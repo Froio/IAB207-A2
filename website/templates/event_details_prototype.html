@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% from "bootstrap5/form.html" import render_field %}
+
+{% block body %}
+
+<div class="container py-4">
+  <div class="row">
+
+    <!-- ── Left: Event Info ── -->
+    <div class="col-lg-8">
+      <h1>{{ event.title }}</h1>
+      <p>{{ event.date }} · {{ event.time }}</p>
+      <p>{{ event.venue }}</p>
+      <hr>
+      <span>Status: {{ event.status }}</span>
+    </div>
+
+    <!-- ── Right: Ticket Form ── -->
+    <div class="col-lg-4">
+      <div class="card p-4">
+        <h5>Get Tickets</h5>
+        <p>Price per ticket: ${{ event.price }}</p>
+        <p>Tickets remaining: {{ event.tickets_available }}</p>
+
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-warning">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <!-- Ticket form -->
+        {% if event.status == 'Open' %}
+          <form method="POST">
+            {{ form.hidden_tag() }}
+            {{ render_field(form.quantity) }}
+            {{ render_field(form.submit) }}
+          </form>
+        {% else %}
+          <p class="text-danger">Tickets are no longer available for this event.</p>
+        {% endif %}
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}
