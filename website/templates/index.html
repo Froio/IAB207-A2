@@ -47,13 +47,20 @@
   <div class="container">
     <div class="d-flex flex-wrap align-items-center gap-3">
       <span style="font-size:0.78rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.1em;margin-right:0.5rem;">Browse by genre</span>
-      <a href="{{ url_for('main.events') }}" class="category-pill">Indie Rock</a>
-      <a href="{{ url_for('main.events') }}" class="category-pill">Folk</a>
-      <a href="{{ url_for('main.events') }}" class="category-pill">Dream Pop</a>
-      <a href="{{ url_for('main.events') }}" class="category-pill">Lo-Fi</a>
-      <a href="{{ url_for('main.events') }}" class="category-pill">Alt Country</a>
-      <a href="{{ url_for('main.events') }}" class="category-pill">Shoegaze</a>
-      <a href="{{ url_for('main.events') }}" class="category-pill">Post-Punk</a>
+      <a href="{{ url_for('main.events', category='Indie Rock') }}" class="category-pill">Indie Rock</a>
+      <a href="{{ url_for('main.events', category='Folk') }}" class="category-pill">Folk</a>
+      <a href="{{ url_for('main.events', category='Dream Pop') }}" class="category-pill">Dream Pop</a>
+      <a href="{{ url_for('main.events', category='Lo-Fi') }}" class="category-pill">Lo-Fi</a>
+      <a href="{{ url_for('main.events', category='Alt Country') }}" class="category-pill">Alt Country</a>
+      <a href="{{ url_for('main.events', category='Shoegaze') }}" class="category-pill">Shoegaze</a>
+      <a href="{{ url_for('main.events', category='Post-Punk') }}" class="category-pill">Post-Punk</a>
+      <div class="ms-auto d-flex gap-2 align-items-center">
+        <form method="get" action="{{ url_for('main.events') }}" class="d-flex gap-2 align-items-center">
+          <input type="hidden" name="category" value="all" />
+          <input type="search" name="search" class="iz-input" placeholder="Search events…" style="padding-left:2.2rem;width:200px;height:36px;font-size:0.85rem;" />
+          <button type="submit" class="btn-neon btn" style="font-size:0.85rem;">Search</button>
+        </form>
+      </div>
     </div>
   </div>
 </section>

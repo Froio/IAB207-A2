@@ -15,25 +15,30 @@
 <div style="background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:1rem 0;">
   <div class="container">
     <div class="d-flex flex-wrap align-items-center gap-2">
-      <a href="#" class="category-pill active" data-cat="all">All</a>
-      <a href="#" class="category-pill" data-cat="Indie Rock">Indie Rock</a>
-      <a href="#" class="category-pill" data-cat="Folk">Folk</a>
-      <a href="#" class="category-pill" data-cat="Dream Pop">Dream Pop</a>
-      <a href="#" class="category-pill" data-cat="Lo-Fi">Lo-Fi</a>
-      <a href="#" class="category-pill" data-cat="Alt Country">Alt Country</a>
-      <a href="#" class="category-pill" data-cat="Shoegaze">Shoegaze</a>
-      <a href="#" class="category-pill" data-cat="Post-Punk">Post-Punk</a>
+      <a href="{{ url_for('main.events', category='all', search=current_search, sort=current_sort) }}" class="category-pill{% if current_category == 'all' %} active{% endif %}">All</a>
+      <a href="{{ url_for('main.events', category='Indie Rock', search=current_search, sort=current_sort) }}" class="category-pill{% if current_category == 'Indie Rock' %} active{% endif %}">Indie Rock</a>
+      <a href="{{ url_for('main.events', category='Folk', search=current_search, sort=current_sort) }}" class="category-pill{% if current_category == 'Folk' %} active{% endif %}">Folk</a>
+      <a href="{{ url_for('main.events', category='Dream Pop', search=current_search, sort=current_sort) }}" class="category-pill{% if current_category == 'Dream Pop' %} active{% endif %}">Dream Pop</a>
+      <a href="{{ url_for('main.events', category='Lo-Fi', search=current_search, sort=current_sort) }}" class="category-pill{% if current_category == 'Lo-Fi' %} active{% endif %}">Lo-Fi</a>
+      <a href="{{ url_for('main.events', category='Alt Country', search=current_search, sort=current_sort) }}" class="category-pill{% if current_category == 'Alt Country' %} active{% endif %}">Alt Country</a>
+      <a href="{{ url_for('main.events', category='Shoegaze', search=current_search, sort=current_sort) }}" class="category-pill{% if current_category == 'Shoegaze' %} active{% endif %}">Shoegaze</a>
+      <a href="{{ url_for('main.events', category='Post-Punk', search=current_search, sort=current_sort) }}" class="category-pill{% if current_category == 'Post-Punk' %} active{% endif %}">Post-Punk</a>
 
       <div class="ms-auto d-flex gap-2 align-items-center">
-        <div style="position:relative;">
-          <i class="bi bi-search" style="position:absolute;left:0.75rem;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:0.85rem;"></i>
-          <input type="search" class="iz-input" placeholder="Search events…" style="padding-left:2.2rem;width:200px;height:36px;font-size:0.85rem;" />
-        </div>
-        <select class="iz-select" style="width:150px;height:36px;font-size:0.82rem;padding:0 0.8rem;">
-          <option>Sort: Soonest</option>
-          <option>Sort: Price ↑</option>
-          <option>Sort: Price ↓</option>
-        </select>
+        <form method="get" action="{{ url_for('main.events') }}" class="d-flex gap-2 align-items-center">
+          <input type="hidden" name="category" value="{{ current_category }}" />
+          <input type="search" name="search" class="iz-input" placeholder="Search events…" value="{{ current_search }}" style="padding-left:2.2rem;width:200px;height:36px;font-size:0.85rem;" />
+          <select name="sort" class="iz-select" style="width:150px;height:36px;font-size:0.82rem;padding:0 0.8rem;">
+            <option value="soonest" {% if current_sort == 'soonest' %}selected{% endif %}>Sort: Soonest</option>
+            <option value="price-asc" {% if current_sort == 'price-asc' %}selected{% endif %}>Sort: Price ↑</option>
+            <option value="price-desc" {% if current_sort == 'price-desc' %}selected{% endif %}>Sort: Price ↓</option>
+            <option value="title-asc" {% if current_sort == 'title-asc' %}selected{% endif %}>Sort: Title A-Z</option>
+            <option value="title-desc" {% if current_sort == 'title-desc' %}selected{% endif %}>Sort: Title Z-A</option>
+            <option value="venue-asc" {% if current_sort == 'venue-asc' %}selected{% endif %}>Sort: Venue A-Z</option>
+            <option value="venue-desc" {% if current_sort == 'venue-desc' %}selected{% endif %}>Sort: Venue Z-A</option>
+          </select>
+          <button type="submit" class="btn-neon btn" style="font-size:0.85rem;">Search</button>
+        </form>
       </div>
     </div>
   </div>
