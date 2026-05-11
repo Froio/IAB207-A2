@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 from .forms import TicketForm
 from flask_login import login_required, current_user
+from datetime import datetime
 
 main_bp = Blueprint('main', __name__)
 
@@ -135,7 +136,49 @@ def index():
 
 @main_bp.route('/events')
 def events():
-    return render_template('events.html', events=temp_events)
+    category = request.args.get('category', 'all')
+    search = request.args.get('search', '').strip()
+    sort = request.args.get('sort', 'soonest')
+
+    filtered_events = temp_events
+
+    if category != 'all':
+        filtered_events = [event for event in filtered_events if event['category'] == category]
+
+    if search:
+        search_lower = search.lower()
+        filtered_events = [event for event in filtered_events if search_lower in event['title'].lower() or search_lower in event['venue'].lower() or search_lower in event['description'].lower() or search_lower in event['category'].lower()]
+
+    def normalise_sort_text(value):
+        value = value.strip().lower()
+        for prefix in ('the ', 'a ', 'an '):
+            if value.startswith(prefix):
+                return value[len(prefix):].strip()
+        return value
+
+    if sort == 'price-asc':
+        filtered_events = [event for event in filtered_events if event['status'] not in ('Cancelled', 'Inactive')]
+        filtered_events = sorted(filtered_events, key=lambda event: event['price'])
+    elif sort == 'price-desc':
+        filtered_events = [event for event in filtered_events if event['status'] not in ('Cancelled', 'Inactive')]
+        filtered_events = sorted(filtered_events, key=lambda event: event['price'], reverse=True)
+    elif sort == 'title-asc':
+        filtered_events = sorted(filtered_events, key=lambda event: normalise_sort_text(event['title']))
+    elif sort == 'title-desc':
+        filtered_events = sorted(filtered_events, key=lambda event: normalise_sort_text(event['title']), reverse=True)
+    elif sort == 'venue-asc':
+        filtered_events = sorted(filtered_events, key=lambda event: normalise_sort_text(event['venue']))
+    elif sort == 'venue-desc':
+        filtered_events = sorted(filtered_events, key=lambda event: normalise_sort_text(event['venue']), reverse=True)
+    else:
+        def parse_date(event_date):
+            try:
+                return datetime.strptime(event_date, '%a %d %b %Y')
+            except ValueError:
+                return datetime.max
+        filtered_events = sorted(filtered_events, key=lambda event: parse_date(event['date']))
+
+    return render_template('events.html', events=filtered_events, current_category=category, current_search=search, current_sort=sort)
 
 @main_bp.route('/event/<int:id>', methods=['GET', 'POST'])
 def event_detail(id):
