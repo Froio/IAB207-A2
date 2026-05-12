@@ -20,6 +20,7 @@ class RegisterForm(FlaskForm):
     # submit button
     submit = SubmitField("Register")
 
+# this is the ticketing form used to purchase tickets from the event details page.
 class TicketForm(FlaskForm):
     quantity = IntegerField('Number of Tickets', validators=[
         InputRequired('Please enter a quantity'),
