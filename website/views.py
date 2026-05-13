@@ -1,136 +1,11 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
-from .forms import TicketForm
 from flask_login import login_required, current_user
+from .forms import TicketForm
+from .models import Event, Order
+from . import db
 from datetime import datetime
 
 main_bp = Blueprint('main', __name__)
-
-
-# ── Dummy data ──
-temp_events = [
-    {
-        'id': 1,
-        'title': 'The Static Echo — Live at Black Bear Lodge',
-        'venue': 'Black Bear Lodge, Fortitude Valley',
-        'address': '1/322 Brunswick St, Fortitude Valley QLD 4006',
-        'date': 'Sat 19 Apr 2026',
-        'time': '8:00 PM — 11:30 PM',
-        'price': 18.00,
-        'tickets_available': 42,
-        'status': 'Open',
-        'category': 'Indie Rock',
-        'description': 'The Static Echo return to Black Bear Lodge for a night of raw, reverb-drenched indie rock.',
-        'acknowledgement_type': 'enhanced',
-        'image': 'img/indie_concert.jpg'
-    },
-    {
-        'id': 2,
-        'title': 'River Hollow Acoustic Session',
-        'venue': 'Black Bear Lodge, Fortitude Valley',
-        'address': '1/322 Brunswick St, Fortitude Valley QLD 4006',
-        'date': 'Fri 25 Apr 2026',
-        'time': '7:30 PM — 10:00 PM',
-        'price': 12.00,
-        'tickets_available': 18,
-        'status': 'Open',
-        'category': 'Folk',
-        'description': 'River Hollow bring their stripped back acoustic sound to Black Bear Lodge for an intimate evening.',
-        'acknowledgement_type': 'generic',
-        'image': 'img/folk.webp'
-    },
-    {
-        'id': 3,
-        'title': 'Purple Haze — The Night Room',
-        'venue': 'The Brightside, Fortitude Valley',
-        'address': '27 Warner St, Fortitude Valley QLD 4006',
-        'date': 'Sat 26 Apr 2026',
-        'time': '9:00 PM — 12:00 AM',
-        'price': 22.00,
-        'tickets_available': 0,
-        'status': 'Sold Out',
-        'category': 'Shoegaze',
-        'description': 'Purple Haze sell out The Brightside for a night of dreamy, effects-laden shoegaze.',
-        'acknowledgement_type': 'none',
-        'image': 'img/shoegaze.jpg'
-    },
-    {
-        'id': 4,
-        'title': 'Moonbeam Collective',
-        'venue': 'The Tivoli, Fortitude Valley',
-        'address': '52 Costin St, Fortitude Valley QLD 4006',
-        'date': 'Thu 1 May 2026',
-        'time': '8:30 PM — 11:00 PM',
-        'price': 20.00,
-        'tickets_available': 60,
-        'status': 'Open',
-        'category': 'Dream Pop',
-        'description': 'Moonbeam Collective bring their ethereal dream pop sound to The Tivoli.',
-        'acknowledgement_type': 'generic',
-        'image': 'img/alt_concert.jpg'
-    },
-    {
-        'id': 5,
-        'title': 'Wire & Static — Fortitude Valley',
-        'venue': 'The Zoo, Fortitude Valley',
-        'address': '711 Ann St, Fortitude Valley QLD 4006',
-        'date': 'Sat 3 May 2026',
-        'time': '9:00 PM — 12:00 AM',
-        'price': 15.00,
-        'tickets_available': 0,
-        'status': 'Cancelled',
-        'category': 'Post-Punk',
-        'description': 'Wire & Static bring their post-punk sound to The Zoo.',
-        'acknowledgement_type': 'none',
-        'image': 'img/WirenStatic.jpeg'
-    },
-    {
-        'id': 6,
-        'title': 'Sunday Tape Session',
-        'venue': "Lefty's Music Hall, Brisbane CBD",
-        'address': '15 Caxton St, Brisbane QLD 4000',
-        'date': 'Sun 4 May 2026',
-        'time': '3:00 PM — 6:00 PM',
-        'price': 0.00,
-        'tickets_available': 30,
-        'status': 'Open',
-        'category': 'Lo-Fi',
-        'description': 'A relaxed Sunday afternoon of lo-fi beats and good vibes.',
-        'acknowledgement_type': 'generic',
-        'image': 'img/Swingamajig.webp'
-    },
-    {
-        'id': 7,
-        'title': 'Dustbowl Riders',
-        'venue': 'The Joynt, West End',
-        'address': '193 Boundary St, West End QLD 4101',
-        'date': 'Sat 15 Mar 2026',
-        'time': '8:00 PM — 11:00 PM',
-        'price': 10.00,
-        'tickets_available': 0,
-        'status': 'Inactive',
-        'category': 'Alt Country',
-        'description': 'Dustbowl Riders bring their alt country sound to The Joynt.',
-        'acknowledgement_type': 'none',
-        'image': 'img/country.avif'
-    },
-    {
-        'id': 8,
-        'title': 'Glass Houses',
-        'venue': 'The Foundry, Fortitude Valley',
-        'address': '17 Doggett St, Fortitude Valley QLD 4006',
-        'date': 'Fri 9 May 2026',
-        'time': '10:00 PM — 1:00 AM',
-        'price': 15.00,
-        'tickets_available': 15,
-        'status': 'Open',
-        'category': 'Indie Rock',
-        'description': 'Glass Houses close out the week with a late set at The Foundry.',
-        'acknowledgement_type': 'none',
-        'image': 'img/indie_rock.jpg'
-    },
-]
-
-
 
 @main_bp.route('/')
 def index():
@@ -142,14 +17,19 @@ def events():
     search = request.args.get('search', '').strip()
     sort = request.args.get('sort', 'soonest')
 
-    filtered_events = temp_events
+    all_events = db.session.scalars(db.select(Event)).all()
+    filtered_events = list(all_events)
 
     if category != 'all':
-        filtered_events = [event for event in filtered_events if event['category'] == category]
+        filtered_events = [e for e in filtered_events if e.category == category]
 
     if search:
         search_lower = search.lower()
-        filtered_events = [event for event in filtered_events if search_lower in event['title'].lower() or search_lower in event['venue'].lower() or search_lower in event['description'].lower() or search_lower in event['category'].lower()]
+        filtered_events = [e for e in filtered_events if
+            search_lower in e.title.lower() or
+            search_lower in e.venue.lower() or
+            search_lower in e.description.lower() or
+            search_lower in e.category.lower()]
 
     def normalise_sort_text(value):
         value = value.strip().lower()
@@ -159,69 +39,76 @@ def events():
         return value
 
     if sort == 'price-asc':
-        filtered_events = [event for event in filtered_events if event['status'] not in ('Cancelled', 'Inactive')]
-        filtered_events = sorted(filtered_events, key=lambda event: event['price'])
+        filtered_events = [e for e in filtered_events if e.status not in ('Cancelled', 'Inactive')]
+        filtered_events = sorted(filtered_events, key=lambda e: e.price)
     elif sort == 'price-desc':
-        filtered_events = [event for event in filtered_events if event['status'] not in ('Cancelled', 'Inactive')]
-        filtered_events = sorted(filtered_events, key=lambda event: event['price'], reverse=True)
+        filtered_events = [e for e in filtered_events if e.status not in ('Cancelled', 'Inactive')]
+        filtered_events = sorted(filtered_events, key=lambda e: e.price, reverse=True)
     elif sort == 'title-asc':
-        filtered_events = sorted(filtered_events, key=lambda event: normalise_sort_text(event['title']))
+        filtered_events = sorted(filtered_events, key=lambda e: normalise_sort_text(e.title))
     elif sort == 'title-desc':
-        filtered_events = sorted(filtered_events, key=lambda event: normalise_sort_text(event['title']), reverse=True)
+        filtered_events = sorted(filtered_events, key=lambda e: normalise_sort_text(e.title), reverse=True)
     elif sort == 'venue-asc':
-        filtered_events = sorted(filtered_events, key=lambda event: normalise_sort_text(event['venue']))
+        filtered_events = sorted(filtered_events, key=lambda e: normalise_sort_text(e.venue))
     elif sort == 'venue-desc':
-        filtered_events = sorted(filtered_events, key=lambda event: normalise_sort_text(event['venue']), reverse=True)
+        filtered_events = sorted(filtered_events, key=lambda e: normalise_sort_text(e.venue), reverse=True)
     else:
-        def parse_date(event_date):
-            try:
-                return datetime.strptime(event_date, '%a %d %b %Y')
-            except ValueError:
-                return datetime.max
-        filtered_events = sorted(filtered_events, key=lambda event: parse_date(event['date']))
+        filtered_events = sorted(filtered_events, key=lambda e: e.start_date)
 
     return render_template('events.html', events=filtered_events, current_category=category, current_search=search, current_sort=sort)
 
 @main_bp.route('/event/<int:id>', methods=['GET', 'POST'])
 def event_detail(id):
-    form = TicketForm()
-    event = next((e for e in temp_events if e['id'] == id), None)
+    event = db.session.scalar(db.select(Event).where(Event.id == id))
 
     if event is None:
         flash('Event not found.')
         return redirect(url_for('main.events'))
 
+    form = TicketForm()
+
     if form.validate_on_submit():
-        # require login before purchasing
         if not current_user.is_authenticated:
             return redirect(url_for('auth.login', next=request.path))
 
         quantity = form.quantity.data
 
-        if quantity > event['tickets_available']:
-            flash(f'Sorry, only {event["tickets_available"]} tickets are available.')
+        if quantity > event.tickets_available:
+            flash(f'Sorry, only {event.tickets_available} tickets are available.')
             return redirect(url_for('main.event_detail', id=id))
 
-        event['tickets_available'] -= quantity
+        # Create order
+        order = Order(
+            quantity=quantity,
+            total_price=round(event.price * quantity + 1.50, 2),
+            booking_fee=1.50,
+            order_date=datetime.utcnow(),
+            user_id=current_user.id,
+            event_id=event.id
+        )
+        db.session.add(order)
 
-        if event['tickets_available'] == 0:
-            event['status'] = 'Sold Out'
+        # Update ticket count
+        event.tickets_available -= quantity
+        if event.tickets_available == 0:
+            event.status = 'Sold Out'
 
-        return redirect(url_for('main.order_confirmation', quantity=quantity, event_id=id))
+        db.session.commit()
 
-    dummy_comments = [
-        {'author': 'Jordan Lee', 'date': '14 Apr 2025', 'text': 'Saw these guys last year — absolute standouts!'},
-        {'author': 'Samira K.', 'date': '15 Apr 2025', 'text': 'Is this all ages? Bringing my younger sister.'},
-    ]
+        return redirect(url_for('main.order_confirmation', order_id=order.id))
 
-    return render_template('event-details.html', event=event, form=form, comments=dummy_comments)
+    comments = event.comments
 
-@main_bp.route('/order-confirmation')
-def order_confirmation():
-    quantity = request.args.get('quantity', 1, type=int)
-    event_id = request.args.get('event_id', 1, type=int)
-    event = next((e for e in temp_events if e['id'] == event_id), None)
-    return render_template('order-confirmation.html', quantity=quantity, event=event)
+    return render_template('event-details.html', event=event, form=form, comments=comments)
+
+@main_bp.route('/order-confirmation/<int:order_id>')
+@login_required
+def order_confirmation(order_id):
+    order = db.session.scalar(db.select(Order).where(Order.id == order_id))
+    if order is None:
+        flash('Order not found.')
+        return redirect(url_for('main.events'))
+    return render_template('order-confirmation.html', order=order, event=order.event)
 
 @main_bp.route('/create-event', methods=['GET', 'POST'])
 @login_required
@@ -236,7 +123,12 @@ def edit_event(id):
 @main_bp.route('/booking-history')
 @login_required
 def booking_history():
-    return render_template('booking-history.html')
+    orders = db.session.scalars(
+        db.select(Order)
+        .where(Order.user_id == current_user.id)
+        .order_by(Order.order_date.desc())
+    ).all()
+    return render_template('booking-history.html', orders=orders)
 
 
 @main_bp.route('/profile')

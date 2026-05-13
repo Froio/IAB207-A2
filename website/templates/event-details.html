@@ -43,8 +43,8 @@
 
       <!-- Meta chips -->
       <div class="d-flex flex-wrap gap-2 mb-4">
-        <span class="meta-chip"><i class="bi bi-calendar3"></i> {{ event.date }}</span>
-        <span class="meta-chip"><i class="bi bi-clock"></i> {{ event.time }}</span>
+        <span class="meta-chip"><i class="bi bi-calendar3"></i> {{ event.start_date.strftime('%a %d %b %Y') }}</span>
+        <span class="meta-chip"><i class="bi bi-clock"></i> {{ event.start_date.strftime('%I:%M %p') }} — {{ event.end_date.strftime('%I:%M %p') }}</span>
         <span class="meta-chip"><i class="bi bi-geo-alt"></i> {{ event.venue }}</span>
         <span class="meta-chip"><i class="bi bi-music-note-beamed"></i> {{ event.category }}</span>
       </div>
@@ -91,11 +91,11 @@
         {% for comment in comments %}
         <div class="comment-card">
           <div class="d-flex gap-3 align-items-start">
-            <div class="comment-avatar">{{ comment.author[0] }}</div>
+            <div class="comment-avatar">{{ comment.author.full_name[0] }}</div>
             <div style="flex:1;">
               <div class="d-flex justify-content-between mb-1">
-                <span style="font-weight:600;font-size:0.88rem;">{{ comment.author }}</span>
-                <span style="font-size:0.75rem;color:var(--text-muted);">{{ comment.date }}</span>
+                <span style="font-weight:600;font-size:0.88rem;">{{ comment.author.full_name }}</span>
+                <span style="font-size:0.75rem;color:var(--text-muted);">{{ comment.created_at.strftime('%d %b %Y') }}</span>
               </div>
               <p style="font-size:0.88rem;color:var(--text-secondary);margin:0;">
                 {{ comment.text }}

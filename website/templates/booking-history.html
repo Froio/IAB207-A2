@@ -1,7 +1,14 @@
 {% extends "base.html" %}
 {% block body %}
 
-<!--  Page Header  -->
+{% set status_class_map = {
+    'Open': 'badge-open',
+    'Sold Out': 'badge-soldout',
+    'Inactive': 'badge-inactive',
+    'Cancelled': 'badge-cancelled'
+} %}
+
+<!-- Page Header -->
 <div class="page-band">
   <div class="container">
     <p class="section-eyebrow">Account</p>
@@ -10,31 +17,42 @@
   </div>
 </div>
 
-<!--  Bookings List  -->
+<!-- Bookings List -->
 <div class="container py-5">
-  <!--  Booking 1 — Upcoming / Open  -->
-  <div class="iz-card mb-4">
+
+  <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1.5rem;">
+    Showing <strong style="color:var(--text-secondary);">{{ orders|length }}</strong> booking(s)
+  </p>
+
+  {% for order in orders %}
+  <div class="iz-card mb-4" {% if order.event.status in ('Inactive', 'Cancelled') %}style="opacity:0.7;"{% endif %}>
     <div class="row g-0">
+
       <!-- Image -->
       <div class="col-md-3">
-        <img src="static/img/indie_concert.jpg"
-             alt="The Static Echo"
-             style="width:100%;height:100%;object-fit:cover;min-height:160px;border-radius:var(--radius-lg) 0 0 var(--radius-lg);" />
+        <img src="{{ url_for('static', filename=order.event.image) }}"
+             alt="{{ order.event.title }}"
+             style="width:100%;height:100%;object-fit:cover;min-height:160px;border-radius:var(--radius-lg) 0 0 var(--radius-lg);
+             {% if order.event.status == 'Sold Out' %} filter:brightness(0.6);
+             {% elif order.event.status == 'Cancelled' %} filter:grayscale(0.8) brightness(0.45);
+             {% elif order.event.status == 'Inactive' %} filter:grayscale(1) brightness(0.4);
+             {% endif %}" />
       </div>
+
       <!-- Details -->
       <div class="col-md-9">
         <div class="p-4">
           <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
             <div>
               <h5 style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;margin-bottom:0.2rem;">
-                The Static Echo — Live at The Black Bear
+                {{ order.event.title }}
               </h5>
               <div class="d-flex flex-wrap gap-2">
-                <span class="meta-chip"><i class="bi bi-calendar3"></i> Sat 19 Apr 2025 · 8:00 PM</span>
-                <span class="meta-chip"><i class="bi bi-geo-alt"></i> Black Bear Lodge, Fortitude Valley</span>
+                <span class="meta-chip"><i class="bi bi-calendar3"></i> {{ order.event.start_date.strftime('%a %d %b %Y') }} · {{ order.event.start_date.strftime('%I:%M %p') }}</span>
+                <span class="meta-chip"><i class="bi bi-geo-alt"></i> {{ order.event.venue }}</span>
               </div>
             </div>
-            <span class="status-badge badge-open">Open</span>
+            <span class="status-badge {{ status_class_map[order.event.status] }}">{{ order.event.status }}</span>
           </div>
 
           <hr style="border-color:var(--border);margin:0.9rem 0;" />
@@ -43,200 +61,70 @@
           <div class="row g-2 mb-3">
             <div class="col-sm-4">
               <p style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);margin-bottom:0.2rem;">Order ID</p>
-              <p style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.1em;color:var(--neon);margin:0;">#IZ-20250419-7284</p>
+              <p style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.1em;color:var(--neon);margin:0;">#IZ-{{ order.id }}</p>
             </div>
             <div class="col-sm-4">
               <p style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);margin-bottom:0.2rem;">Booked On</p>
-              <p style="font-size:0.88rem;color:var(--text-secondary);margin:0;">14 Apr 2025 · 9:42 PM</p>
+              <p style="font-size:0.88rem;color:var(--text-secondary);margin:0;">{{ order.order_date.strftime('%d %b %Y · %I:%M %p') }}</p>
             </div>
             <div class="col-sm-4">
               <p style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);margin-bottom:0.2rem;">Tickets</p>
-              <p style="font-size:0.88rem;color:var(--text-secondary);margin:0;">2 × General Admission</p>
+              <p style="font-size:0.88rem;color:var(--text-secondary);margin:0;">{{ order.quantity }} × General Admission</p>
             </div>
           </div>
 
           <!-- Actions -->
           <div class="d-flex flex-wrap gap-2">
-            <a href="event-detail.html" class="btn-ghost btn" style="font-size:0.82rem;">
+            <a href="{{ url_for('main.event_detail', id=order.event.id) }}" class="btn-ghost btn" style="font-size:0.82rem;">
               <i class="bi bi-eye me-1"></i>View Event
             </a>
-            <button class="btn-outline-neon btn" style="font-size:0.82rem;" data-bs-toggle="modal" data-bs-target="#qrModal1">
+            {% if order.event.status not in ('Inactive', 'Cancelled') %}
+            <button class="btn-outline-neon btn" style="font-size:0.82rem;"
+                    data-bs-toggle="modal" data-bs-target="#qrModal{{ order.id }}">
               <i class="bi bi-qr-code me-1"></i>Show Entry QR
             </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!--  Booking 2 — Sold Out  -->
-  <div class="iz-card mb-4">
-    <div class="row g-0">
-      <div class="col-md-3">
-        <img src="static/img/shoegaze.jpg"
-             alt="Purple Haze"
-             style="width:100%;height:100%;object-fit:cover;min-height:160px;border-radius:var(--radius-lg) 0 0 var(--radius-lg);filter:brightness(0.6);" />
-      </div>
-      <div class="col-md-9">
-        <div class="p-4">
-          <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
-            <div>
-              <h5 style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;margin-bottom:0.2rem;">
-                Purple Haze — The Night Room
-              </h5>
-              <div class="d-flex flex-wrap gap-2">
-                <span class="meta-chip"><i class="bi bi-calendar3"></i> Sat 26 Apr 2025 · 9:00 PM</span>
-                <span class="meta-chip"><i class="bi bi-geo-alt"></i>The Brightside, Fortitude Valley</span>
-              </div>
-            </div>
-            <span class="status-badge badge-soldout">Sold Out</span>
-          </div>
-
-          <hr style="border-color:var(--border);margin:0.9rem 0;" />
-
-          <div class="row g-2 mb-3">
-            <div class="col-sm-4">
-              <p style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);margin-bottom:0.2rem;">Order ID</p>
-              <p style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.1em;color:var(--neon);margin:0;">#IZ-20250412-3391</p>
-            </div>
-            <div class="col-sm-4">
-              <p style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);margin-bottom:0.2rem;">Booked On</p>
-              <p style="font-size:0.88rem;color:var(--text-secondary);margin:0;">10 Apr 2025 · 2:15 PM</p>
-            </div>
-            <div class="col-sm-4">
-              <p style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);margin-bottom:0.2rem;">Tickets</p>
-              <p style="font-size:0.88rem;color:var(--text-secondary);margin:0;">1 × General Admission</p>
-            </div>
-          </div>
-
-          <div class="d-flex flex-wrap gap-2">
-            <a href="event-detail.html" class="btn-ghost btn" style="font-size:0.82rem;">
-              <i class="bi bi-eye me-1"></i>View Event
-            </a>
-            <button class="btn-outline-neon btn" style="font-size:0.82rem;" data-bs-toggle="modal" data-bs-target="#qrModal2">
-              <i class="bi bi-qr-code me-1"></i>Show Entry QR
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!--  Booking 3 — Inactive (past event)  -->
-  <div class="iz-card mb-4" style="opacity:0.7;">
-    <div class="row g-0">
-      <div class="col-md-3">
-        <img src="static/img/country.avif"
-             alt="Dustbowl Riders"
-             style="width:100%;height:100%;object-fit:cover;min-height:160px;border-radius:var(--radius-lg) 0 0 var(--radius-lg);filter:grayscale(1) brightness(0.4);" />
-      </div>
-      <div class="col-md-9">
-        <div class="p-4">
-          <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
-            <div>
-              <h5 style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;margin-bottom:0.2rem;">
-                Dustbowl Riders
-              </h5>
-              <div class="d-flex flex-wrap gap-2">
-                <span class="meta-chip"><i class="bi bi-calendar3"></i> Sat 15 Mar 2025 · 8:00 PM</span>
-                <span class="meta-chip"><i class="bi bi-geo-alt"></i> Workers Club, Fitzroy</span>
-              </div>
-            </div>
-            <span class="status-badge badge-inactive">Inactive</span>
-          </div>
-
-          <hr style="border-color:var(--border);margin:0.9rem 0;" />
-
-          <div class="row g-2 mb-3">
-            <div class="col-sm-4">
-              <p style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);margin-bottom:0.2rem;">Order ID</p>
-              <p style="font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:0.1em;color:var(--neon);margin:0;">#IZ-20250301-1047</p>
-            </div>
-            <div class="col-sm-4">
-              <p style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);margin-bottom:0.2rem;">Booked On</p>
-              <p style="font-size:0.88rem;color:var(--text-secondary);margin:0;">28 Feb 2025 · 7:30 PM</p>
-            </div>
-            <div class="col-sm-4">
-              <p style="font-size:0.72rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-muted);margin-bottom:0.2rem;">Tickets</p>
-              <p style="font-size:0.88rem;color:var(--text-secondary);margin:0;">3 × General Admission</p>
-            </div>
-          </div>
-
-          <div class="d-flex flex-wrap gap-2">
-            <a href="event-detail.html" class="btn-ghost btn" style="font-size:0.82rem;">
-              <i class="bi bi-eye me-1"></i>View Event
-            </a>
+            {% else %}
             <button class="btn-ghost btn" style="font-size:0.82rem;opacity:0.5;" disabled>
               <i class="bi bi-qr-code me-1"></i>Event Passed
             </button>
+            {% endif %}
           </div>
         </div>
       </div>
     </div>
   </div>
 
-</div><!-- /container -->
-
-<!--  QR Modal 1  -->
-<div class="modal fade" id="qrModal1" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-sm">
-    <div class="modal-content" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);">
-      <div class="modal-header" style="border-bottom:1px solid var(--border);">
-        <h5 class="modal-title" style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;">
-          <i class="bi bi-qr-code me-2" style="color:var(--neon);"></i>Entry QR Code
-        </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body text-center" style="padding:1.5rem;">
-        <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:1rem;">
-          Order <strong style="color:var(--neon);">#IZ-20250419-7284</strong> · 2 tickets<br/>
-          Present this at the door for entry.
-        </p>
-        <img src="static/img/qr_code.png" alt="Entry QR Code"
-             style="width:100%;max-width:200px;border-radius:var(--radius);border:1px solid var(--border);" />
+  <!-- QR Modal for each order -->
+  <div class="modal fade" id="qrModal{{ order.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+      <div class="modal-content" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);">
+        <div class="modal-header" style="border-bottom:1px solid var(--border);">
+          <h5 class="modal-title" style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;">
+            <i class="bi bi-qr-code me-2" style="color:var(--neon);"></i>Entry QR Code
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body text-center" style="padding:1.5rem;">
+          <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:1rem;">
+            Order <strong style="color:var(--neon);">#IZ-{{ order.id }}</strong> · {{ order.quantity }} ticket(s)<br/>
+            Present this at the door for entry.
+          </p>
+          <img src="{{ url_for('static', filename='img/qr_code.png') }}" alt="Entry QR Code"
+               style="width:100%;max-width:200px;border-radius:var(--radius);border:1px solid var(--border);" />
+        </div>
       </div>
     </div>
   </div>
+
+  {% else %}
+  <div class="text-center py-5">
+    <i class="bi bi-ticket" style="font-size:3rem;color:var(--text-muted);display:block;margin-bottom:1rem;"></i>
+    <h4 style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;">No Bookings Yet</h4>
+    <p style="color:var(--text-secondary);margin-bottom:1.5rem;">You haven't booked any tickets yet.</p>
+    <a href="{{ url_for('main.events') }}" class="btn-neon btn">Browse Events</a>
+  </div>
+  {% endfor %}
+
 </div>
 
-<!--  QR Modal 2  -->
-<div class="modal fade" id="qrModal2" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-sm">
-    <div class="modal-content" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);">
-      <div class="modal-header" style="border-bottom:1px solid var(--border);">
-        <h5 class="modal-title" style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;">
-          <i class="bi bi-qr-code me-2" style="color:var(--neon);"></i>Entry QR Code
-        </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body text-center" style="padding:1.5rem;">
-        <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:1rem;">
-          Order <strong style="color:var(--neon);">#IZ-20250412-3391</strong> · 1 ticket<br/>
-          Present this at the door for entry.
-        </p>
-        <img src="static/img/qr_code.png" alt="Entry QR Code"
-             style="width:100%;max-width:200px;border-radius:var(--radius);border:1px solid var(--border);" />
-      </div>
-    </div>
-  </div>
-</div>
-
-<!--  Footer  -->
-<footer class="iz-footer">
-  <div class="container">
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-      <div class="footer-brand">INDIE—ZONE</div>
-      <div class="footer-links">
-        <a href="{{ url_for('main.index')}}">Home</a>
-        <a href="{{ url_for('main.events')}}">Events</a>
-        <a href="{{ url_for('main.create_event')}}">Create Event</a>
-      </div>
-    </div>
-    <p class="footer-copy">© 2026 Indie-Zone. All rights reserved.</p>
-  </div>
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
 {% endblock %}

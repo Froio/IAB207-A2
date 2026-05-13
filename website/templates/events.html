@@ -85,7 +85,7 @@
               <h6 style="font-family:'Bebas Neue',sans-serif;font-size:1.15rem;margin:0.4rem 0 0.25rem;line-height:1.15; {% if event.status == 'Cancelled' or event.status == 'Inactive' %}opacity:0.6;{% endif %}">{{ event.title }}</h6>
 
               <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.8rem;">
-                <i class="bi bi-calendar3 me-1"></i>{{ event.date }} · {{ event.time.split('—')[0].strip() }}
+                <i class="bi bi-calendar3 me-1"></i>{{ event.start_date.strftime('%a %d %b %Y') }} · {{ event.start_date.strftime('%I:%M %p') }}
               </p>
               <p style="font-size:0.78rem;color:var(--text-muted);margin-bottom:0.8rem;">
                 <i class="bi bi-geo-alt me-1"></i>{{ event.venue }}

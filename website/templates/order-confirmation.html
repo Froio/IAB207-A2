@@ -41,12 +41,12 @@
       </div>
 
       <!-- Order rows -->
-      <div class="order-row"><span class="label">Tickets</span><span>{{ quantity }} × General Admission</span></div>
+      <div class="order-row"><span class="label">Tickets</span><span>{{ order.quantity }} × General Admission</span></div>
       <div class="order-row"><span class="label">Price per ticket</span><span>${{ event.price }}</span></div>
       <div class="order-row"><span class="label">Booking fee</span><span>$1.50</span></div>
       <div class="order-total">
         <span>Total Paid</span>
-        <span style="color:var(--neon);">${{ "%.2f" | format(event.price * quantity + 1.50) }}</span>
+        <span style="color:var(--neon);">${{ "%.2f" | format(order.total_price) }}</span>
       </div>
 
       <!-- Ticket codes -->
