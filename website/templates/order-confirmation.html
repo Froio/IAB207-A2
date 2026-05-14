@@ -22,13 +22,15 @@
       <!-- Order ID -->
       <div style="background:var(--bg-secondary);border-radius:var(--radius);padding:0.8rem 1rem;margin-bottom:1.5rem;display:flex;justify-content:space-between;align-items:center;">
         <span style="font-size:0.78rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.08em;">Order Number</span>
-        <span style="font-family:'Bebas Neue',sans-serif;font-size:1.15rem;color:var(--neon);letter-spacing:0.1em;">#IZ-20250419-7284</span>
+        <span style="font-family:'Bebas Neue',sans-serif;font-size:1.15rem;color:var(--neon);letter-spacing:0.1em;">#IZ-{{ '%06d'|format(order_id) }}</span>
       </div>
 
       <!-- Event Summary -->
       <div style="display:flex;gap:1rem;margin-bottom:1.5rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border);">
-        <img src="{{ url_for('static', filename='img/indie_concert.jpg') }}"
+        {% if event.image %}
+        <img src="{{ url_for('static', filename=event.image) }}"
              alt="Event" style="width:90px;height:60px;object-fit:cover;border-radius:var(--radius);flex-shrink:0;" />
+        {% endif %}
         <div>
           <div style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;line-height:1.2;margin-bottom:0.3rem;">
             {{ event.title }}
@@ -42,26 +44,15 @@
 
       <!-- Order rows -->
       <div class="order-row"><span class="label">Tickets</span><span>{{ quantity }} × General Admission</span></div>
-      <div class="order-row"><span class="label">Price per ticket</span><span>${{ event.price }}</span></div>
-      <div class="order-row"><span class="label">Booking fee</span><span>$1.50</span></div>
+      <div class="order-row"><span class="label">Price per ticket</span><span>${{ "%.2f"|format(event.price) }}</span></div>
       <div class="order-total">
         <span>Total Paid</span>
-        <span style="color:var(--neon);">${{ "%.2f" | format(event.price * quantity + 1.50) }}</span>
+        <span style="color:var(--neon);">${{ "%.2f" | format(event.price * quantity) }}</span>
       </div>
 
-      <!-- Ticket codes -->
-      <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--border);">
-        <p style="font-size:0.75rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:0.8rem;">Your Ticket Codes</p>
-        <div class="d-flex flex-wrap gap-2">
-          <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:0.5rem 1rem;font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:0.12em;">
-            IZ-A1 · F4K2-9QBX
-          </div>
-          <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:var(--radius);padding:0.5rem 1rem;font-family:'Bebas Neue',sans-serif;font-size:1.05rem;letter-spacing:0.12em;">
-            IZ-A2 · W8RN-3MPT
-          </div>
-        </div>
-        <p style="font-size:0.75rem;color:var(--text-muted);margin-top:0.6rem;">Present these codes at the door. Screenshot or print this confirmation.</p>
-      </div>
+      <p style="font-size:0.78rem;color:var(--text-muted);margin-top:1.4rem;margin-bottom:0;">
+        Show this confirmation (or your <a href="{{ url_for('main.booking_history') }}" style="color:var(--neon);">My Bookings</a> page) at the door for entry.
+      </p>
 
     </div>
 

@@ -29,9 +29,11 @@
     <div class="col-lg-8">
 
       <!-- Banner image -->
+      {% if event.image %}
       <img src="{{ url_for('static', filename=event.image) }}"
            alt="{{ event.title }}"
            class="detail-banner-img mb-4" />
+      {% endif %}
 
       <!-- Title + status -->
       <div class="d-flex flex-wrap align-items-start gap-3 mb-2">
@@ -79,13 +81,29 @@
         </h3>
 
         <!-- Post comment form -->
-        <div class="iz-card p-4 mb-4">
-          <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:1rem;font-weight:600;">Post a Comment</p>
-          <textarea class="iz-textarea" rows="3" placeholder="Share your thoughts, ask a question…" style="margin-bottom:0.8rem;"></textarea>
-          <div class="d-flex justify-content-end">
-            <button class="btn-neon btn" style="font-size:0.9rem;padding:0.5rem 1.4rem;">Post Comment</button>
+        {% if current_user.is_authenticated %}
+        <form method="POST" action="{{ url_for('main.event_detail', id=event.id) }}">
+          {{ comment_form.hidden_tag() }}
+          <div class="iz-card p-4 mb-4">
+            <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:1rem;font-weight:600;">Post a Comment</p>
+            {{ comment_form.text(class="iz-textarea", rows="3", placeholder="Share your thoughts, ask a question…", style="margin-bottom:0.6rem;") }}
+            {% for error in comment_form.text.errors %}
+              <div class="field-error">{{ error }}</div>
+            {% endfor %}
+            <div class="d-flex justify-content-end mt-2">
+              {{ comment_form.submit_comment(class="btn-neon btn", style="font-size:0.9rem;padding:0.5rem 1.4rem;") }}
+            </div>
           </div>
+        </form>
+        {% else %}
+        <div class="iz-card p-4 mb-4">
+          <p style="font-size:0.88rem;color:var(--text-secondary);margin:0;">
+            <a href="{{ url_for('auth.login', next=request.path) }}" style="color:var(--neon);">Log in</a>
+            or <a href="{{ url_for('auth.register') }}" style="color:var(--neon);">register</a>
+            to post a comment.
+          </p>
         </div>
+        {% endif %}
 
         <!-- Comments loop -->
         {% for comment in comments %}
@@ -131,24 +149,16 @@
             <span style="color:var(--text-secondary);">{{ event.tickets_available }}</span>
           </div>
 
-          <!-- Flash messages -->
-          {% with messages = get_flashed_messages() %}
-            {% if messages %}
-              {% for message in messages %}
-                <div class="alert-iz-danger mb-3">
-                  <i class="bi bi-exclamation-circle me-2"></i>{{ message }}
-                </div>
-              {% endfor %}
-            {% endif %}
-          {% endwith %}
-
           <!-- Ticket form -->
           {% if event.status == 'Open' %}
           <form method="POST" action="{{ url_for('main.event_detail', id=event.id) }}">
             {{ form.hidden_tag() }}
             <label class="iz-label mb-2">Number of Tickets</label>
-            {{ form.quantity(class="iz-input mb-3") }}
-            {{ form.submit(class="btn-neon btn w-100", style="font-size:1.05rem;padding:0.7rem;") }}
+            {{ form.quantity(class="iz-input mb-1") }}
+            {% for error in form.quantity.errors %}
+              <div class="field-error mb-2">{{ error }}</div>
+            {% endfor %}
+            {{ form.submit(class="btn-neon btn w-100 mt-2", style="font-size:1.05rem;padding:0.7rem;") }}
           </form>
           {% else %}
           <p style="color:var(--pink);font-size:0.88rem;">Tickets are no longer available for this event.</p>
@@ -168,6 +178,7 @@
         </div>
 
         <!-- Event creator actions -->
+        {% if current_user.is_authenticated and current_user.id == event.creator_id %}
         <div class="iz-card p-4 mb-3" style="border-color:rgba(200,255,0,0.15);">
           <p style="font-size:0.75rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--neon);margin-bottom:0.8rem;">
             <i class="bi bi-shield-check me-1"></i> You created this event
@@ -176,11 +187,14 @@
             <a href="{{ url_for('main.edit_event', id=event.id) }}" class="btn-outline-neon btn" style="font-size:0.88rem;text-align:center;">
               <i class="bi bi-pencil me-1"></i>Edit Event
             </a>
-            <button class="btn-danger-subtle btn" data-bs-toggle="modal" data-bs-target="#cancelModal">
+            {% if event.status != 'Cancelled' %}
+            <button type="button" class="btn-danger-subtle btn" data-bs-toggle="modal" data-bs-target="#cancelModal">
               <i class="bi bi-x-circle me-1"></i>Cancel Event
             </button>
+            {% endif %}
           </div>
         </div>
+        {% endif %}
 
       </div>
     </div><!-- /col-lg-4 -->
@@ -189,29 +203,34 @@
 </div><!-- /container -->
 
 <!-- Cancel Event Modal -->
+{% if current_user.is_authenticated and current_user.id == event.creator_id and event.status != 'Cancelled' %}
 <div class="modal fade" id="cancelModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content" style="background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);">
-      <div class="modal-header" style="border-bottom:1px solid var(--border);">
-        <h5 class="modal-title" style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--pink);">
-          Cancel This Event?
-        </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body" style="padding:1.5rem;">
-        <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:0.5rem;">
-          This action will set the event status to <strong style="color:#ff6c3c;">Cancelled</strong> and notify all ticket holders.
-        </p>
-        <p style="color:var(--text-secondary);font-size:0.9rem;">This cannot be undone. Are you sure?</p>
-      </div>
-      <div class="modal-footer" style="border-top:1px solid var(--border);gap:0.75rem;">
-        <button type="button" class="btn-ghost btn" data-bs-dismiss="modal">Keep Event</button>
-        <button type="button" class="btn-danger-subtle btn" style="font-size:0.9rem;padding:0.55rem 1.4rem;">
-          <i class="bi bi-x-circle me-1"></i>Yes, Cancel Event
-        </button>
-      </div>
+      <form method="POST" action="{{ url_for('main.cancel_event', id=event.id) }}">
+        {{ form.hidden_tag() }}
+        <div class="modal-header" style="border-bottom:1px solid var(--border);">
+          <h5 class="modal-title" style="font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--pink);">
+            Cancel This Event?
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" style="padding:1.5rem;">
+          <p style="color:var(--text-secondary);font-size:0.9rem;margin-bottom:0.5rem;">
+            This action will set the event status to <strong style="color:#ff6c3c;">Cancelled</strong> and notify all ticket holders.
+          </p>
+          <p style="color:var(--text-secondary);font-size:0.9rem;">This cannot be undone. Are you sure?</p>
+        </div>
+        <div class="modal-footer" style="border-top:1px solid var(--border);gap:0.75rem;">
+          <button type="button" class="btn-ghost btn" data-bs-dismiss="modal">Keep Event</button>
+          <button type="submit" class="btn-danger-subtle btn" style="font-size:0.9rem;padding:0.55rem 1.4rem;">
+            <i class="bi bi-x-circle me-1"></i>Yes, Cancel Event
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
+{% endif %}
 
 {% endblock %}
