@@ -9,6 +9,7 @@ from wtforms.validators import (
 )
 
 
+
 class LoginForm(FlaskForm):
     email = StringField("Email Address", validators=[
         InputRequired('Enter email address'),
@@ -75,6 +76,23 @@ ACK_CHOICES = [
     ('enhanced', 'Enhanced Acknowledgement'),
 ]
 
+SEQ_REGION_CHOICES = [
+    ('', 'Select a region...'),
+    ('Brisbane CBD', 'Brisbane CBD — Turrbal and Jagera peoples'),
+    ('Gold Coast', 'Gold Coast — Yugambeh peoples'),
+    ('Sunshine Coast', 'Sunshine Coast — Kabi Kabi peoples'),
+    ('Toowoomba', 'Toowoomba — Giabal and Jarowair peoples'),
+    ('Ipswich', 'Ipswich — Yugarapul peoples'),
+    ('Logan/Redlands', 'Logan/Redlands — Quandamooka peoples'),
+]
+
+IS_INDIGENOUS_CHOICES = [
+    ('yes', 'Yes, I identify as Aboriginal or Torres Strait Islander'),
+    ('no', 'No'),
+]
+
+
+
 
 class EventForm(FlaskForm):
     title = StringField('Event Title', validators=[
@@ -118,4 +136,14 @@ class EventForm(FlaskForm):
     acknowledgement_type = RadioField('Acknowledgement of Country',
         choices=ACK_CHOICES, default='none',
         validators=[InputRequired('Select an acknowledgement option')])
+    acknowledgement_region = SelectField(
+        'Region',
+        choices=SEQ_REGION_CHOICES,
+        validators=[Optional()]
+    )
+    is_indigenous = RadioField(
+        'Do you identify as Aboriginal or Torres Strait Islander?',
+        choices=IS_INDIGENOUS_CHOICES,
+        validators=[Optional()]
+    )
     submit = SubmitField('Publish Event')

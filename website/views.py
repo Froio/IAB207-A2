@@ -212,6 +212,21 @@ def create_event():
     form = EventForm()
     if form.validate_on_submit():
         try:
+            ## Acknowledgement of Country validation
+            acknowledgement_type = form.acknowledgement_type.data
+            acknowledgement_region = form.acknowledgement_region.data or None
+
+            if acknowledgement_type == 'none':
+                if form.is_indigenous.data == 'yes':
+                    acknowledgement_type = 'welcome_to_country'
+                else:
+                    flash('If you are not Aboriginal or Torres Strait Islander, you must include an Acknowledgement of Country. Please select Generic or Enhanced.', 'warning')
+                    return render_template('create-event.html', form=form)
+
+            if acknowledgement_type == 'enhanced' and not acknowledgement_region:
+                flash('Please select a region for the Enhanced Acknowledgement of Country.', 'warning')
+                return render_template('create-event.html', form=form)
+
             image_path = None
             if form.image.data:
                 try:
@@ -235,7 +250,8 @@ def create_event():
                 capacity=form.capacity.data,
                 tickets_available=form.capacity.data,
                 price=form.price.data,
-                acknowledgement_type=form.acknowledgement_type.data,
+                acknowledgement_type=acknowledgement_type,
+                acknowledgement_region=acknowledgement_region,
                 status='Open',
                 creator_id=current_user.id,
             )
@@ -298,6 +314,7 @@ def edit_event(id):
             event.end_time = form.end_time.data
             event.price = form.price.data
             event.acknowledgement_type = form.acknowledgement_type.data
+            event.acknowledgement_region = form.acknowledgement_region.data or None
 
             # Capacity changes also adjust remaining tickets by the same delta
             tickets_sold = old_capacity - old_tickets_available

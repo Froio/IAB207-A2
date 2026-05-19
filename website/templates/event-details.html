@@ -65,10 +65,31 @@
         <p style="margin-bottom:0.3rem;font-size:0.75rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--purple-light);font-style:normal;">Acknowledgement of Country</p>
         We acknowledge the Traditional Custodians of the lands on which this event takes place and pay our respect to their Elders past, present, and emerging.
       </div>
+
       {% elif event.acknowledgement_type == 'enhanced' %}
       <div class="aoc-block mb-4">
         <p style="margin-bottom:0.3rem;font-size:0.75rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--purple-light);font-style:normal;">Acknowledgement of Country — Enhanced</p>
+        {% if event.acknowledgement_region == 'Brisbane CBD' %}
+        We acknowledge the Turrbal and Jagera peoples as the Traditional Custodians of the land on which this event takes place, and pay our respect to their Elders past, present, and emerging. We recognise their ongoing connection to this land and their continued contributions to community and culture. Sovereignty was never ceded.
+        {% elif event.acknowledgement_region == 'Gold Coast' %}
+        We acknowledge the Yugambeh peoples as the Traditional Custodians of the land on which this event takes place, and pay our respect to their Elders past, present, and emerging. We recognise their ongoing connection to this land and their continued contributions to community and culture. Sovereignty was never ceded.
+        {% elif event.acknowledgement_region == 'Sunshine Coast' %}
+        We acknowledge the Kabi Kabi peoples as the Traditional Custodians of the land on which this event takes place, and pay our respect to their Elders past, present, and emerging. We recognise their ongoing connection to this land and their continued contributions to community and culture. Sovereignty was never ceded.
+        {% elif event.acknowledgement_region == 'Toowoomba' %}
+        We acknowledge the Giabal and Jarowair peoples as the Traditional Custodians of the land on which this event takes place, and pay our respect to their Elders past, present, and emerging. We recognise their ongoing connection to this land and their continued contributions to community and culture. Sovereignty was never ceded.
+        {% elif event.acknowledgement_region == 'Ipswich' %}
+        We acknowledge the Yugarapul peoples as the Traditional Custodians of the land on which this event takes place, and pay our respect to their Elders past, present, and emerging. We recognise their ongoing connection to this land and their continued contributions to community and culture. Sovereignty was never ceded.
+        {% elif event.acknowledgement_region == 'Logan/Redlands' %}
+        We acknowledge the Quandamooka peoples — the Nunukul, Nughi and Gorenpul — as the Traditional Custodians of the land on which this event takes place, and pay our respect to their Elders past, present, and emerging. We recognise their ongoing connection to this land and their continued contributions to community and culture. Sovereignty was never ceded.
+        {% else %}
         We acknowledge the Traditional Custodians of the land on which this event takes place and pay our respect to their Elders past, present, and emerging. We recognise their ongoing connection to this land and their continued contributions to community and culture. Sovereignty was never ceded.
+        {% endif %}
+      </div>
+
+      {% elif event.acknowledgement_type == 'welcome_to_country' %}
+      <div class="aoc-block mb-4">
+        <p style="margin-bottom:0.3rem;font-size:0.75rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--purple-light);font-style:normal;">Welcome to Country</p>
+        This event is hosted by a Traditional Custodian of this land. We are welcomed to this Country and invited to share in the culture, connection, and community of this place.
       </div>
       {% endif %}
 

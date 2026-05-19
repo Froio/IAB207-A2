@@ -21,6 +21,7 @@ SEED_EVENTS = [
         'tickets_available': 42,
         'price': 18.00,
         'acknowledgement_type': 'enhanced',
+        'acknowledgement_region': 'Brisbane CBD',
         'status': 'Open',
     },
     {
