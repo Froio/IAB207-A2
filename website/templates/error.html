@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="container py-5 text-center" style="min-height:60vh;display:flex;align-items:center;justify-content:center;">
+  <div>
+    <h1 style="font-family:'Bebas Neue',sans-serif;font-size:6rem;line-height:1;color:var(--neon);margin-bottom:0.5rem;">{{ error_code }}</h1>
+    <h2 style="font-family:'Bebas Neue',sans-serif;font-size:2rem;margin-bottom:1rem;">{{ error_message }}</h2>
+    <p style="color:var(--text-secondary);max-width:480px;margin:0 auto 1.6rem;">{{ error_description }}</p>
+    <div class="d-flex gap-3 justify-content-center flex-wrap">
+      <a href="{{ url_for('main.index') }}" class="btn-neon btn">
+        <i class="bi bi-house me-1"></i>Back to Home
+      </a>
+      <a href="{{ url_for('main.events') }}" class="btn-outline-neon btn">
+        <i class="bi bi-search me-1"></i>Browse Events
+      </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -24,7 +24,10 @@
             <ul class="navbar-nav me-auto ms-4 gap-1">
                 <li class="nav-item"><a class="nav-link active" href="{{ url_for('main.index')}}">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('main.events')}}">Events</a></li>
+                {% if current_user.is_authenticated %}
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('main.create_event')}}">Create Event</a></li>
                 <li class="nav-item"><a class="nav-link" href="{{ url_for('main.booking_history')}}">My Bookings</a></li>
+                {% endif %}
             </ul>
             <div class="d-flex gap-2 mt-3 mt-lg-0">
                 {% if current_user.is_authenticated %}
@@ -38,19 +41,31 @@
             </div>
         </div>
         </nav>
-        <!-- Code for using Flask flash -->
-        <div class="container-fluid">
-            {% with messages = get_flashed_messages() %}
-            {% if messages %}
-            {% for message in messages %}
-            <div class="alert alert-warning">
-                <button type="button" class="close" data-dismiss="alert" aria-label="close">x</button>
-                {{message}}
+        <!-- Flash messages -->
+        {% set _alert_class_map = {
+            'success': 'alert-iz-success',
+            'danger':  'alert-iz-danger',
+            'warning': 'alert-iz-warning',
+            'error':   'alert-iz-danger',
+            'message': 'alert-iz-warning'
+        } %}
+        {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+        <div class="container py-2">
+            {% for category, message in messages %}
+            <div class="{{ _alert_class_map.get(category, 'alert-iz-warning') }} d-flex align-items-center justify-content-between mb-2">
+                <span>
+                    {% if category == 'success' %}<i class="bi bi-check-circle me-2"></i>
+                    {% elif category in ('danger','error') %}<i class="bi bi-exclamation-circle me-2"></i>
+                    {% else %}<i class="bi bi-info-circle me-2"></i>
+                    {% endif %}
+                    {{ message }}
+                </span>
             </div>
             {% endfor %}
-            {% endif %}
-            {% endwith %}
         </div>
+        {% endif %}
+        {% endwith %}
         {% block header %}
 
         {% endblock %}

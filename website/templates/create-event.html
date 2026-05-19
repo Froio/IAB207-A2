@@ -15,7 +15,8 @@
 <div class="container py-5">
   <div class="row justify-content-center">
     <div class="col-lg-8 col-xl-7">
-      <form novalidate>
+      <form method="POST" enctype="multipart/form-data" novalidate>
+        {{ form.hidden_tag() }}
 
         <!--  Section: Basic Info  -->
         <div class="iz-card p-4 mb-4">
@@ -24,40 +25,28 @@
           </h4>
 
           <div class="mb-3">
-            <label class="iz-label" for="ev-title">Event Title</label>
-            <input type="text" id="ev-title" class="iz-input" placeholder="Enter event title" required />
+            {{ form.title.label(class="iz-label") }}
+            {{ form.title(class="iz-input", placeholder="Enter event title") }}
+            {% for error in form.title.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
           </div>
 
           <div class="mb-3">
-            <label class="iz-label" for="ev-category">Genre / Category</label>
-            <select id="ev-category" class="iz-select" required>
-              <option value="" disabled selected>Select a genre…</option>
-              <option>Indie Rock</option>
-              <option>Folk</option>
-              <option>Dream Pop</option>
-              <option>Lo-Fi</option>
-              <option>Alt Country</option>
-              <option>Shoegaze</option>
-              <option>Post-Punk</option>
-              <option>Other</option>
-            </select>
+            {{ form.category.label(class="iz-label") }}
+            {{ form.category(class="iz-select") }}
+            {% for error in form.category.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
           </div>
 
           <div class="mb-3">
-            <label class="iz-label" for="ev-description">Description</label>
-            <textarea id="ev-description" class="iz-textarea" rows="5"
-              placeholder="Describe the event"></textarea>
+            {{ form.description.label(class="iz-label") }}
+            {{ form.description(class="iz-textarea", rows="5", placeholder="Describe the event") }}
+            {% for error in form.description.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
           </div>
 
           <div class="mb-0">
-            <label class="iz-label" for="ev-image">Event Image</label>
-            <div style="border:1.5px dashed var(--border-bright);border-radius:var(--radius);padding:2rem;text-align:center;cursor:pointer;transition:border-color var(--transition);"
-                 onmouseenter="this.style.borderColor='var(--neon)'" onmouseleave="this.style.borderColor='var(--border-bright)'">
-              <i class="bi bi-image" style="font-size:2rem;color:var(--text-muted);display:block;margin-bottom:0.5rem;"></i>
-              <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:0.3rem;">Click to upload or drag and drop</p>
-              <p style="font-size:0.75rem;color:var(--text-muted);">PNG, JPG, WEBP — max 5 MB</p>
-              <input type="file" id="ev-image" accept="image/*" style="display:none;" />
-            </div>
+            {{ form.image.label(class="iz-label") }}
+            {{ form.image(class="iz-input") }}
+            <p style="font-size:0.75rem;color:var(--text-muted);margin-top:0.4rem;margin-bottom:0;">PNG, JPG, WEBP, AVIF — max 5 MB</p>
+            {% for error in form.image.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
           </div>
         </div>
 
@@ -68,44 +57,51 @@
           </h4>
 
           <div class="mb-3">
-            <label class="iz-label" for="ev-headliner">Headliner / Main Act</label>
-            <input type="text" id="ev-headliner" class="iz-input" placeholder="Enter headliner name" required />
+            {{ form.headliner.label(class="iz-label") }}
+            {{ form.headliner(class="iz-input", placeholder="Enter headliner name") }}
+            {% for error in form.headliner.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
           </div>
 
-          <div class="mb-3">
-            <label class="iz-label" for="ev-support">Support Acts</label>
-            <input type="text" id="ev-support" class="iz-input" placeholder="Enter support acts" />
+          <div class="mb-0">
+            {{ form.support_acts.label(class="iz-label") }}
+            {{ form.support_acts(class="iz-input", placeholder="Comma-separated, e.g. Foxfield, Pale Grey Horses") }}
+            {% for error in form.support_acts.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
           </div>
         </div>
 
-        <!--  Section: Venue & Time  -->
+        <!--  Section: Venue & Date  -->
         <div class="iz-card p-4 mb-4">
           <h4 style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;margin-bottom:1.2rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border);">
             <i class="bi bi-geo-alt me-2" style="color:var(--neon);"></i>Venue & Date
           </h4>
 
           <div class="mb-3">
-            <label class="iz-label" for="ev-venue">Venue Name</label>
-            <input type="text" id="ev-venue" class="iz-input" placeholder="Enter venue name" required />
+            {{ form.venue.label(class="iz-label") }}
+            {{ form.venue(class="iz-input", placeholder="Enter venue name") }}
+            {% for error in form.venue.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
           </div>
 
           <div class="mb-3">
-            <label class="iz-label" for="ev-address">Venue Address</label>
-            <input type="text" id="ev-address" class="iz-input" placeholder="Enter venue address" required />
+            {{ form.address.label(class="iz-label") }}
+            {{ form.address(class="iz-input", placeholder="Enter venue address") }}
+            {% for error in form.address.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
           </div>
 
           <div class="row g-3 mb-0">
             <div class="col-sm-4">
-              <label class="iz-label" for="ev-date">Date</label>
-              <input type="date" id="ev-date" class="iz-input" required />
+              {{ form.event_date.label(class="iz-label") }}
+              {{ form.event_date(class="iz-input") }}
+              {% for error in form.event_date.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
             </div>
             <div class="col-sm-4">
-              <label class="iz-label" for="ev-start">Start Time</label>
-              <input type="time" id="ev-start" class="iz-input" required />
+              {{ form.start_time.label(class="iz-label") }}
+              {{ form.start_time(class="iz-input") }}
+              {% for error in form.start_time.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
             </div>
             <div class="col-sm-4">
-              <label class="iz-label" for="ev-end">End Time</label>
-              <input type="time" id="ev-end" class="iz-input" />
+              {{ form.end_time.label(class="iz-label") }}
+              {{ form.end_time(class="iz-input") }}
+              {% for error in form.end_time.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
             </div>
           </div>
         </div>
@@ -118,15 +114,17 @@
 
           <div class="row g-3">
             <div class="col-sm-6">
-              <label class="iz-label" for="ev-capacity">Total Capacity</label>
-              <input type="number" id="ev-capacity" class="iz-input" placeholder="Enter capacity" min="1" required />
+              {{ form.capacity.label(class="iz-label") }}
+              {{ form.capacity(class="iz-input", placeholder="Enter capacity", min="1") }}
+              {% for error in form.capacity.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
             </div>
             <div class="col-sm-6">
-              <label class="iz-label" for="ev-price">Ticket Price (AUD)</label>
+              {{ form.price.label(class="iz-label") }}
               <div style="position:relative;">
                 <span style="position:absolute;left:0.9rem;top:50%;transform:translateY(-50%);color:var(--text-muted);">$</span>
-                <input type="number" id="ev-price" class="iz-input" style="padding-left:1.8rem;" placeholder="0.00" min="0" step="0.01" required />
+                {{ form.price(class="iz-input", style="padding-left:1.8rem;", placeholder="0.00", min="0", step="0.01") }}
               </div>
+              {% for error in form.price.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
             </div>
           </div>
         </div>
@@ -141,66 +139,32 @@
             Please select the level of acknowledgement you wish to include with your event.
           </p>
 
-          <!-- Option 1 -->
-          <label class="d-flex gap-3 mb-3 p-3 iz-card" style="cursor:pointer;border-radius:var(--radius);" for="aoc-none">
-            <input class="form-check-input mt-1" type="radio" name="aoc" id="aoc-none" value="none" checked
-              style="flex-shrink:0;accent-color:var(--purple-light);width:18px;height:18px;" />
+          {% for subfield in form.acknowledgement_type %}
+          <label class="d-flex gap-3 mb-3 p-3 iz-card" style="cursor:pointer;border-radius:var(--radius);">
+            {{ subfield(class="form-check-input mt-1", style="flex-shrink:0;accent-color:var(--purple-light);width:18px;height:18px;") }}
             <div>
-              <div style="font-weight:600;font-size:0.9rem;margin-bottom:0.2rem;">No Acknowledgement of Country</div>
-              <div style="font-size:0.8rem;color:var(--text-muted);">No acknowledgement statement will be displayed on your event.</div>
+              <div style="font-weight:600;font-size:0.9rem;margin-bottom:0.2rem;">{{ subfield.label.text }}</div>
+              <div style="font-size:0.8rem;color:var(--text-muted);">
+                {% if subfield.data == 'none' %}No acknowledgement statement will be displayed on your event.
+                {% elif subfield.data == 'generic' %}A standard acknowledgement recognising Traditional Custodians will be shown.
+                {% elif subfield.data == 'enhanced' %}A deeper acknowledgement that recognises sovereignty, ongoing connection, and cultural contributions of Traditional Custodians.
+                {% endif %}
+              </div>
             </div>
           </label>
-
-          <!-- Option 2 -->
-          <label class="d-flex gap-3 mb-3 p-3 iz-card" style="cursor:pointer;border-radius:var(--radius);" for="aoc-generic">
-            <input class="form-check-input mt-1" type="radio" name="aoc" id="aoc-generic" value="generic"
-              style="flex-shrink:0;accent-color:var(--purple-light);width:18px;height:18px;" />
-            <div>
-              <div style="font-weight:600;font-size:0.9rem;margin-bottom:0.2rem;">Acknowledgement of Country — Generic</div>
-              <div style="font-size:0.8rem;color:var(--text-muted);">A standard acknowledgement recognising Traditional Custodians will be shown.</div>
-            </div>
-          </label>
-
-          <!-- Option 3 -->
-          <label class="d-flex gap-3 mb-0 p-3 iz-card" style="cursor:pointer;border-radius:var(--radius);border-color:rgba(161,127,220,0.3);" for="aoc-enhanced">
-            <input class="form-check-input mt-1" type="radio" name="aoc" id="aoc-enhanced" value="enhanced"
-              style="flex-shrink:0;accent-color:var(--purple-light);width:18px;height:18px;" />
-            <div>
-              <div style="font-weight:600;font-size:0.9rem;margin-bottom:0.2rem;">Acknowledgement of Country — Enhanced</div>
-              <div style="font-size:0.8rem;color:var(--text-muted);">A deeper acknowledgement that recognises sovereignty, ongoing connection, and cultural contributions of Traditional Custodians.</div>
-            </div>
-          </label>
+          {% endfor %}
+          {% for error in form.acknowledgement_type.errors %}<div class="field-error">{{ error }}</div>{% endfor %}
         </div>
 
         <!--  Submit Row  -->
         <div class="d-flex flex-wrap gap-3 justify-content-end">
           <a href="{{ url_for('main.events')}}" class="btn-ghost btn">Cancel</a>
-          <button type="submit" class="btn-neon btn btn-lg" style="font-size:1.1rem;padding:0.7rem 2rem;">
-            <i class="bi bi-check-lg me-2"></i>Publish Event
-          </button>
+          {{ form.submit(class="btn-neon btn btn-lg", style="font-size:1.1rem;padding:0.7rem 2rem;") }}
         </div>
 
       </form>
     </div>
   </div>
 </div>
-
-<!--  Footer  -->
-<footer class="iz-footer">
-  <div class="container">
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
-      <div class="footer-brand">INDIE—ZONE</div>
-      <div class="footer-links">
-        <a href="{{ url_for('main.index')}}">Home</a>
-        <a href="{{ url_for('main.events')}}">Events</a>
-      </div>
-    </div>
-    <p class="footer-copy">© 2026 Indie-Zone. All rights reserved.</p>
-  </div>
-</footer>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
 
 {% endblock %}
