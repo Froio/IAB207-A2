@@ -37,7 +37,10 @@ def _save_event_image(file_storage):
 
 @main_bp.route('/')
 def index():
-    return render_template('index.html')
+    featured = db.session.scalars(
+        db.select(Event).order_by(Event.event_date.asc()).limit(3)
+    ).all()
+    return render_template('index.html', featured=featured)
 
 
 @main_bp.route('/events')

@@ -77,68 +77,54 @@
     </div>
 
     <div class="row g-4">
-      <!-- Card 1 -->
+      {% set status_class_map = {
+          'Open': 'badge-open',
+          'Sold Out': 'badge-soldout',
+          'Inactive': 'badge-inactive',
+          'Cancelled': 'badge-cancelled'
+      } %}
+      {% for event in featured %}
       <div class="col-sm-6 col-lg-4">
-        <a href="{{ url_for('main.event_detail', id=1) }}" class="text-decoration-none">
+        <a href="{{ url_for('main.event_detail', id=event.id) }}" class="text-decoration-none">
           <div class="iz-card">
-            <img src="{{ url_for('static', filename='img/indie_concert.jpg') }}" alt="Concert" class="card-img-top" />
+            {% if event.image %}
+            <img src="{{ url_for('static', filename=event.image) }}"
+                alt="{{ event.title }}"
+                class="card-img-top"
+                {% if event.status == 'Sold Out' %}style="filter:brightness(0.6);"
+                {% elif event.status == 'Cancelled' %}style="filter:grayscale(0.8) brightness(0.45);"
+                {% elif event.status == 'Inactive' %}style="filter:grayscale(1) brightness(0.4);"
+                {% endif %} />
+            {% endif %}
             <div class="p-4">
               <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="category-pill" style="font-size:0.7rem;padding:0.2rem 0.7rem;">Indie Rock</span>
-                <span class="status-badge badge-open">Open</span>
+                <span class="category-pill" style="font-size:0.7rem;padding:0.2rem 0.7rem;">{{ event.category }}</span>
+                <span class="status-badge {{ status_class_map[event.status] }}">{{ event.status }}</span>
               </div>
-              <h5 style="font-family:'Bebas Neue',sans-serif;font-size:1.35rem;margin:0.6rem 0 0.3rem;">The Static Echo — Live at the Black Bear</h5>
-              <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">Sat 19 Apr 2026 · 8:00 PM · Black Bear Lodge, Fortitude Valley</p>
+              <h5 style="font-family:'Bebas Neue',sans-serif;font-size:1.35rem;margin:0.6rem 0 0.3rem;">{{ event.title }}</h5>
+              <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">
+                {{ event.date }} · {{ event.time }} · {{ event.venue }}
+              </p>
               <div class="d-flex justify-content-between align-items-center">
-                <span style="font-size:0.82rem;color:var(--text-secondary);"><i class="bi bi-ticket me-1"></i>42 tickets left</span>
-                <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--neon);">$18</span>
+                {% if event.status == 'Open' %}
+                  <span style="font-size:0.82rem;color:var(--text-secondary);"><i class="bi bi-ticket me-1"></i>{{ event.tickets_available }} tickets left</span>
+                  <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--neon);">
+                    {% if event.price == 0 %}Free{% else %}${{ "%.0f"|format(event.price) }}{% endif %}
+                  </span>
+                {% elif event.status == 'Sold Out' %}
+                  <span style="font-size:0.82rem;color:var(--pink);"><i class="bi bi-x-circle me-1"></i>Sold out</span>
+                  <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--text-muted);">${{ "%.0f"|format(event.price) }}</span>
+                {% elif event.status == 'Cancelled' %}
+                  <span style="font-size:0.82rem;color:#ff6c3c;">Event cancelled</span>
+                {% elif event.status == 'Inactive' %}
+                  <span style="font-size:0.82rem;color:var(--text-muted);">Event has passed</span>
+                {% endif %}
               </div>
             </div>
           </div>
         </a>
       </div>
-
-      <!-- Card 2 -->
-      <div class="col-sm-6 col-lg-4">
-        <a href="{{ url_for('main.event_detail', id=2) }}" class="text-decoration-none">
-          <div class="iz-card">
-            <img src="{{ url_for('static', filename='img/folk.webp') }}" alt="Folk" class="card-img-top" />
-            <div class="p-4">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="category-pill" style="font-size:0.7rem;padding:0.2rem 0.7rem;">Folk</span>
-                <span class="status-badge badge-open">Open</span>
-              </div>
-              <h5 style="font-family:'Bebas Neue',sans-serif;font-size:1.35rem;margin:0.6rem 0 0.3rem;">River Hollow Acoustic Session</h5>
-              <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">Fri 25 Apr 2026 · 7:30 PM · Queen Street Mall, Brisbane CBD</p>
-              <div class="d-flex justify-content-between align-items-center">
-                <span style="font-size:0.82rem;color:var(--text-secondary);"><i class="bi bi-ticket me-1"></i>18 tickets left</span>
-                <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--neon);">$12</span>
-              </div>
-            </div>
-          </div>
-        </a>
-      </div>
-
-      <!-- Card 3 — Sold Out -->
-      <div class="col-sm-6 col-lg-4">
-        <a href="{{ url_for('main.event_detail', id=3) }}" class="text-decoration-none">
-          <div class="iz-card">
-            <img src="{{ url_for('static', filename='img/shoegaze.jpg') }}" alt="Shoegaze" class="card-img-top" style="filter:brightness(0.6);" />
-            <div class="p-4">
-              <div class="d-flex justify-content-between align-items-center mb-2">
-                <span class="category-pill" style="font-size:0.7rem;padding:0.2rem 0.7rem;">Shoegaze</span>
-                <span class="status-badge badge-soldout">Sold Out</span>
-              </div>
-              <h5 style="font-family:'Bebas Neue',sans-serif;font-size:1.35rem;margin:0.6rem 0 0.3rem;">Purple Haze — The Night Room</h5>
-              <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1rem;">Sat 26 Apr 2026 · 9:00 PM · The Brightside, Fortitude Valley</p>
-              <div class="d-flex justify-content-between align-items-center">
-                <span style="font-size:0.82rem;color:var(--pink);"><i class="bi bi-x-circle me-1"></i>Sold out</span>
-                <span style="font-family:'Bebas Neue',sans-serif;font-size:1.1rem;color:var(--text-muted);">$22</span>
-              </div>
-            </div>
-          </div>
-        </a>
-      </div>
+      {% endfor %}
     </div>
 
     <div class="text-center mt-4 d-md-none">
