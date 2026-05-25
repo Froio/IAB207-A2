@@ -4,8 +4,9 @@ from wtforms.fields import (
     TextAreaField, SubmitField, StringField, PasswordField,
     IntegerField, SelectField, DateField, TimeField, FloatField, RadioField
 )
+from datetime import date
 from wtforms.validators import (
-    InputRequired, Length, Email, EqualTo, NumberRange, Regexp, Optional
+    InputRequired, Length, Email, EqualTo, NumberRange, Regexp, Optional, ValidationError
 )
 
 
@@ -95,6 +96,7 @@ IS_INDIGENOUS_CHOICES = [
 
 
 class EventForm(FlaskForm):
+    
     title = StringField('Event Title', validators=[
         InputRequired('Enter event title'),
         Length(max=200, message='Title must be under 200 characters')
@@ -147,3 +149,12 @@ class EventForm(FlaskForm):
         validators=[Optional()]
     )
     submit = SubmitField('Publish Event')
+    def validate_event_date(self, field):
+        if not field.data:
+            return
+        if field.data < date.today():
+            raise ValidationError('Event date cannot be in the past')
+
+    def validate_end_time(self, field):
+        if field.data and self.start_time.data and field.data <= self.start_time.data:
+            raise ValidationError('End time must be after start time')

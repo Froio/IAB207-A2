@@ -57,7 +57,10 @@ def _refresh_event_statuses():
 def index():
     _refresh_event_statuses()
     featured = db.session.scalars(
-        db.select(Event).order_by(Event.event_date.asc()).limit(3)
+        db.select(Event)
+          .where(~Event.status.in_(['Cancelled', 'Inactive']))
+          .order_by(Event.event_date.asc())
+          .limit(3)
     ).all()
     return render_template('index.html', featured=featured)
 
@@ -70,7 +73,7 @@ def events():
     sort = request.args.get('sort', 'soonest')
 
     try:
-        query = db.select(Event)
+        query = db.select(Event).where(~Event.status.in_(['Cancelled', 'Inactive']))
 
         if category != 'all':
             query = query.where(Event.category == category)
@@ -272,12 +275,9 @@ def create_event():
             acknowledgement_type = form.acknowledgement_type.data
             acknowledgement_region = form.acknowledgement_region.data or None
 
-            if acknowledgement_type == 'none':
-                if form.is_indigenous.data == 'yes':
-                    acknowledgement_type = 'welcome_to_country'
-                else:
-                    flash('If you are not Aboriginal or Torres Strait Islander, you must include an Acknowledgement of Country. Please select Generic or Enhanced.', 'warning')
-                    return render_template('create-event.html', form=form)
+            if acknowledgement_type == 'none' and form.is_indigenous.data != 'yes':
+                flash('If you are not Aboriginal or Torres Strait Islander, you must include an Acknowledgement of Country. Please select Generic or Enhanced.', 'warning')
+                return render_template('create-event.html', form=form)
 
             if acknowledgement_type == 'enhanced' and not acknowledgement_region:
                 flash('Please select a region for the Enhanced Acknowledgement of Country.', 'warning')
@@ -344,10 +344,26 @@ def edit_event(id):
     form = EventForm(obj=event)
 
     if form.validate_on_submit():
+        acknowledgement_type = form.acknowledgement_type.data
+        acknowledgement_region = form.acknowledgement_region.data or None
+
+        if acknowledgement_type == 'none' and form.is_indigenous.data != 'yes':
+            flash('If you are not Aboriginal or Torres Strait Islander, you must include an Acknowledgement of Country. Please select Generic or Enhanced.', 'warning')
+            return render_template('edit-event.html', form=form, event=event)
+
+        if acknowledgement_type == 'enhanced' and not acknowledgement_region:
+            flash('Please select a region for the Enhanced Acknowledgement of Country.', 'warning')
+            return render_template('edit-event.html', form=form, event=event)
+
+        old_capacity = event.capacity
+        old_tickets_available = event.tickets_available
+        tickets_sold = old_capacity - old_tickets_available
+        if form.capacity.data < tickets_sold:
+            flash('Capacity cannot be lower than the number of tickets already sold.', 'warning')
+            return render_template('edit-event.html', form=form, event=event)
+
         try:
             old_image = event.image
-            old_capacity = event.capacity
-            old_tickets_available = event.tickets_available
 
             new_image = None
             if form.image.data:
@@ -369,11 +385,10 @@ def edit_event(id):
             event.start_time = form.start_time.data
             event.end_time = form.end_time.data
             event.price = form.price.data
-            event.acknowledgement_type = form.acknowledgement_type.data
-            event.acknowledgement_region = form.acknowledgement_region.data or None
+            event.acknowledgement_type = acknowledgement_type
+            event.acknowledgement_region = acknowledgement_region
 
             # Capacity changes also adjust remaining tickets by the same delta
-            tickets_sold = old_capacity - old_tickets_available
             event.capacity = form.capacity.data
             event.tickets_available = max(0, form.capacity.data - tickets_sold)
 

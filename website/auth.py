@@ -1,3 +1,4 @@
+from urllib.parse import urlparse
 from flask import Blueprint, flash, render_template, request, url_for, redirect
 from flask_login import login_user, login_required, logout_user
 from .models import User
@@ -24,7 +25,10 @@ def login():
         if error is None:
             login_user(user)
             nextp = request.args.get('next') # this gives the url from where the login page was accessed
-            if nextp is None or not nextp.startswith('/'):
+            if not nextp:
+                return redirect(url_for('main.index'))
+            parsed_nextp = urlparse(nextp)
+            if parsed_nextp.scheme or parsed_nextp.netloc or not nextp.startswith('/'):
                 return redirect(url_for('main.index'))
             return redirect(nextp)
         else:

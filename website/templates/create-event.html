@@ -17,6 +17,21 @@
     <div class="col-lg-8 col-xl-7">
       <form method="POST" enctype="multipart/form-data" novalidate>
         {{ form.hidden_tag() }}
+        {% if form.errors %}
+        <div class="alert alert-iz-danger d-flex align-items-start mb-4" style="gap:0.75rem;">
+          <i class="bi bi-exclamation-circle"></i>
+          <div>
+            <strong>Please fix the highlighted fields below.</strong>
+            {% if form.errors %}
+              {% for field, errors in form.errors.items() %}
+                {% for error in errors %}
+                  <div>{{ error }}</div>
+                {% endfor %}
+              {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+        {% endif %}
 
         <!--  Section: Basic Info  -->
         <div class="iz-card p-4 mb-4">
