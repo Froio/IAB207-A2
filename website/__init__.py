@@ -13,7 +13,8 @@ def create_app():
     app = Flask(__name__)
     # Should be set to false in a production environment
     app.debug = True
-    app.secret_key = 'somesecretkey'
+    app.config['SECRET_KEY'] = 'somesecretkey'
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///sitedata.sqlite'
     # Limit uploaded image size to ~5 MB
     app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024

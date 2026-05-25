@@ -8,7 +8,7 @@ class User(db.Model, UserMixin):
     firstname = db.Column(db.String(120), nullable=False)
     surname = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    contact_number = db.Column(db.String(15), nullable=False)
+    contact_number = db.Column(db.String(32), nullable=False)
     street_address = db.Column(db.String(255), nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)

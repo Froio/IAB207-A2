@@ -17,6 +17,21 @@
     <div class="col-lg-8 col-xl-7">
       <form method="POST" enctype="multipart/form-data" novalidate>
         {{ form.hidden_tag() }}
+        {% if form.errors %}
+        <div class="alert alert-iz-danger d-flex align-items-start mb-4" style="gap:0.75rem;">
+          <i class="bi bi-exclamation-circle"></i>
+          <div>
+            <strong>Please fix the highlighted fields below.</strong>
+            {% if form.errors %}
+              {% for field, errors in form.errors.items() %}
+                {% for error in errors %}
+                  <div>{{ error }}</div>
+                {% endfor %}
+              {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+        {% endif %}
 
         <!--  Section: Basic Info  -->
         <div class="iz-card p-4 mb-4">
@@ -134,20 +149,43 @@
           <h4 style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;margin-bottom:0.5rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border);">
             <i class="bi bi-sun me-2" style="color:var(--purple-light);"></i>Acknowledgement of Country
           </h4>
-          <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:1.2rem;">
-            Acknowledgements of Country have become a valued and widely expected part of Australian events.
-            Please select the level of acknowledgement you wish to include with your event.
+          <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:1rem;">
+            Acknowledgements of Country are a respectful way to recognise the Traditional Custodians of the land on which this event will take place.
+            They show awareness of history and support reconciliation by acknowledging the enduring connection of First Nations peoples to Country.
           </p>
+          <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:1.4rem;">
+            A <strong>Acknowledgement of Country</strong> can be made by anyone. A <strong>Welcome to Country</strong> is different: it is a cultural welcome that should be performed by a recognised Traditional Custodian.
+          </p>
+          <div class="iz-card p-3 mb-4" style="background:rgba(112,81,196,0.06);border-color:rgba(112,81,196,0.2);">
+            <p style="font-size:0.88rem;color:var(--purple-light);font-weight:700;margin-bottom:0.75rem;">Good practice for a meaningful acknowledgement</p>
+            <ul style="font-size:0.82rem;color:var(--text-secondary);padding-left:1.2rem;margin-bottom:0;">
+              <li>Use the correct Traditional Custodians for the event location.</li>
+              <li>Avoid generic wording that feels tokenistic; recognise ongoing connection to Country.</li>
+              <li>Do not claim to speak for Traditional Owners.</li>
+              <li>Check reliable sources before publishing your event.</li>
+            </ul>
+          </div>
+          <div class="iz-card p-3 mb-4" style="background:rgba(71,97,183,0.06);border-color:rgba(71,97,183,0.2);">
+            <p style="font-size:0.88rem;color:var(--text-muted);font-weight:700;margin-bottom:0.75rem;">Helpful resources</p>
+            <ul style="font-size:0.82rem;color:var(--text-secondary);padding-left:1.2rem;margin-bottom:0;">
+              <li><a href="https://aiatsis.gov.au/aboriginal-and-torres-strait-islander-people/recognising-country" target="_blank" rel="noreferrer" style="color:var(--neon);">AIATSIS guidance on recognising Country</a></li>
+              <li><a href="https://www.reconciliation.org.au/" target="_blank" rel="noreferrer" style="color:var(--neon);">Reconciliation Australia</a></li>
+              <li><a href="https://www.niaa.gov.au/indigenous-affairs/people/acknowledgement-country" target="_blank" rel="noreferrer" style="color:var(--neon);">NIAA Acknowledgement of Country</a></li>
+            </ul>
+          </div>
 
+          <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:1.2rem;">
+            Select the level of acknowledgement you wish to include with your event.
+          </p>
           {% for subfield in form.acknowledgement_type %}
           <label class="d-flex gap-3 mb-3 p-3 iz-card" style="cursor:pointer;border-radius:var(--radius);" for="{{ subfield.id }}">
             {{ subfield(class="form-check-input mt-1", style="flex-shrink:0;accent-color:var(--purple-light);width:18px;height:18px;") }}
             <div>
               <div style="font-weight:600;font-size:0.9rem;margin-bottom:0.2rem;">{{ subfield.label.text }}</div>
               <div style="font-size:0.8rem;color:var(--text-muted);">
-                {% if subfield.data == 'none' %}No acknowledgement — you will be asked if you identify as Aboriginal or Torres Strait Islander.
-                {% elif subfield.data == 'generic' %}A standard acknowledgement recognising Traditional Custodians will be shown.
-                {% elif subfield.data == 'enhanced' %}A region-specific acknowledgement for Traditional Custodians of that area.
+                {% if subfield.data == 'none' %}No acknowledgement statement will be displayed unless you identify as Aboriginal or Torres Strait Islander, in which case a Welcome to Country will appear.
+                {% elif subfield.data == 'generic' %}A respectful, general acknowledgement of the Traditional Custodians will be shown.
+                {% elif subfield.data == 'enhanced' %}A location-specific acknowledgement will be shown using the selected custodial group.
                 {% endif %}
               </div>
             </div>
