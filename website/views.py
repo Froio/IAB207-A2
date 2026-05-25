@@ -33,10 +33,29 @@ def _save_event_image(file_storage):
     return f"img/{unique}"
 
 
+def _refresh_event_statuses():
+    """Set past events to Inactive unless they are already Sold Out or Cancelled."""
+    try:
+        today = datetime.utcnow().date()
+        expired = db.session.scalars(
+            db.select(Event)
+              .where(Event.event_date < today)
+              .where(~Event.status.in_(['Inactive', 'Cancelled', 'Sold Out']))
+        ).all()
+        if expired:
+            for event in expired:
+                event.status = 'Inactive'
+            db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f'Event status refresh error: {e}')
+
+
 # ── routes ──────────────────────────────────────────────────────────────
 
 @main_bp.route('/')
 def index():
+    _refresh_event_statuses()
     featured = db.session.scalars(
         db.select(Event).order_by(Event.event_date.asc()).limit(3)
     ).all()
@@ -45,6 +64,7 @@ def index():
 
 @main_bp.route('/events')
 def events():
+    _refresh_event_statuses()
     category = request.args.get('category', 'all')
     search = request.args.get('search', '').strip()
     sort = request.args.get('sort', 'soonest')
@@ -98,6 +118,7 @@ def events():
 
 @main_bp.route('/event/<int:id>', methods=['GET', 'POST'])
 def event_detail(id):
+    _refresh_event_statuses()
     ticket_form = TicketForm()
     comment_form = CommentForm()
 
@@ -185,6 +206,38 @@ def event_detail(id):
         form=ticket_form,
         comment_form=comment_form,
         comments=comments)
+
+
+@main_bp.route('/comment/<int:comment_id>/delete', methods=['POST'])
+@login_required
+def delete_comment(comment_id):
+    try:
+        comment = db.session.scalar(db.select(Comment).where(Comment.id == comment_id))
+    except Exception as e:
+        current_app.logger.error(f'Comment delete load error: {e}')
+        flash('Could not delete the comment.', 'danger')
+        return redirect(request.referrer or url_for('main.index'))
+
+    if comment is None:
+        flash('Comment not found.', 'warning')
+        return redirect(request.referrer or url_for('main.index'))
+
+    if comment.user_id != current_user.id:
+        flash('You can only delete your own comments.', 'warning')
+        return redirect(url_for('main.event_detail', id=comment.event_id))
+
+    try:
+        event_id = comment.event_id
+        db.session.delete(comment)
+        db.session.commit()
+        flash('Comment deleted.', 'success')
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f'Comment delete error: {e}')
+        flash('Could not delete the comment.', 'danger')
+        return redirect(url_for('main.event_detail', id=comment.event_id if comment else None))
+
+    return redirect(url_for('main.event_detail', id=event_id))
 
 
 @main_bp.route('/order-confirmation')
@@ -367,9 +420,41 @@ def cancel_event(id):
     return redirect(url_for('main.event_detail', id=id))
 
 
+@main_bp.route('/event/<int:id>/delete', methods=['POST'])
+@login_required
+def delete_event(id):
+    try:
+        event = db.session.scalar(db.select(Event).where(Event.id == id))
+    except Exception as e:
+        current_app.logger.error(f'Delete event load error: {e}')
+        flash('An error occurred while loading the event.', 'danger')
+        return redirect(url_for('main.events'))
+
+    if event is None:
+        flash('Event not found.', 'danger')
+        return redirect(url_for('main.events'))
+
+    if event.creator_id != current_user.id:
+        flash('You do not have permission to delete this event.', 'danger')
+        return redirect(url_for('main.event_detail', id=id))
+
+    try:
+        db.session.delete(event)
+        db.session.commit()
+        flash('Event deleted successfully.', 'success')
+    except Exception as e:
+        db.session.rollback()
+        current_app.logger.error(f'Delete event error: {e}')
+        flash('An error occurred while deleting the event.', 'danger')
+        return redirect(url_for('main.event_detail', id=id))
+
+    return redirect(url_for('main.events'))
+
+
 @main_bp.route('/booking-history')
 @login_required
 def booking_history():
+    _refresh_event_statuses()
     try:
         orders = db.session.scalars(
             db.select(Order).where(Order.user_id == current_user.id)

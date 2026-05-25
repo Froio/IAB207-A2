@@ -134,7 +134,14 @@
             <div style="flex:1;">
               <div class="d-flex justify-content-between mb-1">
                 <span style="font-weight:600;font-size:0.88rem;">{{ comment.author }}</span>
-                <span style="font-size:0.75rem;color:var(--text-muted);">{{ comment.date }}</span>
+                <div class="d-flex align-items-center gap-2">
+                  <span style="font-size:0.75rem;color:var(--text-muted);">{{ comment.date }}</span>
+                  {% if current_user.is_authenticated and current_user.id == comment.user_id %}
+                  <form method="POST" action="{{ url_for('main.delete_comment', comment_id=comment.id) }}" style="display:inline;">
+                    <button type="submit" class="btn btn-sm btn-outline-danger" style="font-size:0.72rem;padding:0.25rem 0.5rem;">Delete</button>
+                  </form>
+                  {% endif %}
+                </div>
               </div>
               <p style="font-size:0.88rem;color:var(--text-secondary);margin:0;">
                 {{ comment.text }}
@@ -251,6 +258,8 @@
       </form>
     </div>
   </div>
+</div>
+
 </div>
 {% endif %}
 
