@@ -73,7 +73,7 @@ def events():
     sort = request.args.get('sort', 'soonest')
 
     try:
-        query = db.select(Event).where(~Event.status.in_(['Cancelled', 'Inactive']))
+        query = db.select(Event).where(~Event.status.in_(['Inactive']))
 
         if category != 'all':
             query = query.where(Event.category == category)
