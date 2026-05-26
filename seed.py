@@ -1,7 +1,7 @@
 from datetime import datetime, date, time
 
-from . import create_app, db, bcrypt
-from .models import User, Event
+from website import create_app, db, bcrypt
+from website.models import User, Event
 
 
 SEED_EVENTS = [
@@ -14,7 +14,7 @@ SEED_EVENTS = [
         'support_acts': 'Pale Grey Horses, Foxfield',
         'venue': 'Black Bear Lodge, Fortitude Valley',
         'address': '1/322 Brunswick St, Fortitude Valley QLD 4006',
-        'event_date': date(2026, 4, 19),
+        'event_date': date(2026, 12, 19),
         'start_time': time(20, 0),
         'end_time': time(23, 30),
         'capacity': 60,
@@ -33,7 +33,7 @@ SEED_EVENTS = [
         'support_acts': None,
         'venue': 'Black Bear Lodge, Fortitude Valley',
         'address': '1/322 Brunswick St, Fortitude Valley QLD 4006',
-        'event_date': date(2026, 4, 25),
+        'event_date': date(2026, 12, 25),
         'start_time': time(19, 30),
         'end_time': time(22, 0),
         'capacity': 30,
@@ -51,7 +51,7 @@ SEED_EVENTS = [
         'support_acts': 'Velvet Drift',
         'venue': 'The Brightside, Fortitude Valley',
         'address': '27 Warner St, Fortitude Valley QLD 4006',
-        'event_date': date(2026, 4, 26),
+        'event_date': date(2026, 12, 26),
         'start_time': time(21, 0),
         'end_time': time(0, 0),
         'capacity': 80,
@@ -87,7 +87,7 @@ SEED_EVENTS = [
         'support_acts': None,
         'venue': 'The Zoo, Fortitude Valley',
         'address': '711 Ann St, Fortitude Valley QLD 4006',
-        'event_date': date(2026, 5, 3),
+        'event_date': date(2026, 12, 3),
         'start_time': time(21, 0),
         'end_time': time(0, 0),
         'capacity': 70,
@@ -105,7 +105,7 @@ SEED_EVENTS = [
         'support_acts': None,
         'venue': "Lefty's Music Hall, Brisbane CBD",
         'address': '15 Caxton St, Brisbane QLD 4000',
-        'event_date': date(2026, 5, 4),
+        'event_date': date(2026, 12, 4),
         'start_time': time(15, 0),
         'end_time': time(18, 0),
         'capacity': 40,
@@ -123,7 +123,7 @@ SEED_EVENTS = [
         'support_acts': None,
         'venue': 'The Joynt, West End',
         'address': '193 Boundary St, West End QLD 4101',
-        'event_date': date(2026, 3, 15),
+        'event_date': date(2026, 12, 15),
         'start_time': time(20, 0),
         'end_time': time(23, 0),
         'capacity': 50,
@@ -141,7 +141,7 @@ SEED_EVENTS = [
         'support_acts': None,
         'venue': 'The Foundry, Fortitude Valley',
         'address': '17 Doggett St, Fortitude Valley QLD 4006',
-        'event_date': date(2026, 5, 9),
+        'event_date': date(2026, 12, 9),
         'start_time': time(22, 0),
         'end_time': time(1, 0),
         'capacity': 25,
